@@ -168,7 +168,7 @@ const PERGUNTAS = [
   {id:'F1P1', t:'Você foi remanejado para a prensa 800 t. No seu posto de sempre você usa óculos, protetor auricular e luva. O que fazer antes de começar?',
    o:{a:'Usar os mesmos EPIs, já que a operação é parecida',b:'Perguntar ao operador do turno anterior quais ele usava',c:'Conferir no EPI board daquele posto',d:'Seguir a lista de EPIs da integração de quando entrou na empresa'}},
   {id:'F1P2', t:'Na liberação de posto, você percebe que o PF não está no posto. Você já conhece bem a peça. O que faz?',
-   o:{a:'Começa, porque já sabe fazer a operação',b:'Pede o PF ao líder e só começa com ele no posto',c:'Começa e avisa o líder no intervalo',d:'Usa o PF de uma peça parecida que está no posto ao lado'}},
+   o:{a:'Começa, porque já sabe fazer a operação',b:'Aciona o inspetor de qualidade, que leva o PF ao posto, e só começa com ele no posto',c:'Começa e avisa o líder no intervalo',d:'Usa o PF de uma peça parecida que está no posto ao lado'}},
   {id:'F1P3', t:'O líder pediu para começar logo a produção. Qual documento você precisa preencher antes da primeira peça?',
    o:{a:'O PF, anotando a hora de início',b:'A gama de embalagem, com a quantidade por caixa',c:'O plano de controle, com as medidas da peça',d:'A ordem de produção e a liberação de posto de trabalho'}},
   {id:'F1P4', t:'O set-up terminou às 14h, mas o inspetor só chega às 14h30. O líder sugere produzir enquanto isso e mostrar as peças depois. O que fazer?',
@@ -415,7 +415,7 @@ const CAP=[
   },
   async()=>{ // PF
     irPosto();AT.op.epi=true;
-    await falar('Agora, como se faz a operação. Ninguém trabalha de memória nem só "do jeito do colega": o padrão do posto está no <b>PF, o processo de fabricação</b>.');
+    await falar('Agora, como se faz a operação. Ninguém trabalha de memória nem só "do jeito do colega": o padrão do posto está no <b>PF, o processo de fabricação</b>. Quem leva os documentos ao posto, incluindo o PF, é o <b>inspetor de qualidade</b>.');
     await tocar('Toque no PF, no cavalete.',[{x:37,y:34,w:17,h:26}]);
     await cartao(`<div class="tag">PF · Processo de fabricação</div><div class="doc pf">
       <div class="pfh"><b>Processo de Fabricação (PF)</b><span>Fase: Produção</span></div>
