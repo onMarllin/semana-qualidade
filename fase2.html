@@ -1,0 +1,650 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Semana da Qualidade · Fase 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#14181d;--panel:#1d232a;--panel2:#262e37;--edge:#0a0d10;--line:#394451;--text:#e9edf0;--muted:#98a6b3;--yel:#f2c230;--green:#5cc26b;--purple:#4a6fb3;--red:#ec5a50;
+  --display:'Silkscreen',ui-monospace,monospace;--font:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:17px;font-weight:500;line-height:1.45;-webkit-tap-highlight-color:transparent}
+.app{max-width:560px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 2px 8px}
+.brand{font-weight:800;text-transform:uppercase;font-size:12px;color:var(--yel);letter-spacing:.05em}
+.fase{font-weight:800;font-size:17px}
+.prog{display:flex;gap:4px}.prog i{width:14px;height:10px;border:2px solid var(--edge);background:var(--panel2)}.prog i.on{background:var(--yel)}
+canvas.px{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+#cena{width:100%;height:auto;border:3px solid var(--edge);box-shadow:0 0 0 2px var(--line);background:#2a3038;touch-action:manipulation}
+.sc{position:relative}.labs{position:absolute;inset:3px;pointer-events:none}.labs span{position:absolute;transform:translate(-50%,0);font-weight:800;font-size:11px;color:#fff;background:#0a0d10cc;padding:1px 4px;white-space:nowrap}
+.dlg{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;background:#1c2129;border:3px solid var(--purple);box-shadow:0 0 0 3px var(--edge);padding:10px;min-height:150px}
+.dlg canvas{width:48px;height:76px;background:#262d37;border:2px solid var(--line)}
+.dlg .nm{font-weight:800;color:#c9d8f5;font-size:15px}.dlg .nm span{font-size:11px;background:var(--purple);color:#ffffff;padding:1px 6px;margin-left:6px}
+.dlg p{margin:4px 0 8px;min-height:4.4em;font-size:17px}
+.dlg .acts{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:16px;font-weight:800;color:#1a1406;background:var(--yel);border:3px solid var(--edge);box-shadow:inset 0 -3px 0 #9c7a14,inset 0 3px 0 #ffe07a;padding:8px 14px 10px;cursor:pointer}
+.btn:disabled{opacity:.4}.btn.ghost{background:var(--panel);color:var(--text);box-shadow:inset 0 -3px 0 var(--line)}
+.btn.wide{width:100%}
+.hint{color:var(--yel);font-weight:600}
+.ov{position:fixed;inset:0;background:rgba(5,7,9,.8);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:10px}
+@media (min-width:600px){.ov{align-items:center}}
+.card{background:var(--panel);border:3px solid var(--edge);box-shadow:inset 0 0 0 2px var(--line);width:100%;max-width:520px;max-height:92dvh;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.card h2{margin:0;font-size:20px}.tag{font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:12px;color:var(--yel)}
+.qt{font-size:18px;font-weight:700;margin:0;line-height:1.35}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts button{font:inherit;font-size:16px;text-align:left;color:var(--text);background:var(--panel2);border:3px solid var(--edge);padding:10px 12px;cursor:pointer;display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start}
+.opts button b{font-weight:800;color:var(--muted)}
+.opts button.sel{border-color:var(--yel);box-shadow:inset 0 0 0 2px var(--yel)}.opts button.sel b{color:var(--yel)}
+.ok{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 0;text-align:center}
+.ok .chk{width:56px;height:56px;border:3px solid var(--green);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;animation:pop .3s ease-out}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+label{font-size:14px;color:var(--muted)}
+input,select{font:inherit;font-size:16px;color:var(--text);background:var(--panel2);border:2px solid var(--line);padding:8px 10px;width:100%}
+.muted{color:var(--muted)}.tiny{font-size:13px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chips button{font:inherit;font-size:15px;color:var(--text);background:var(--panel2);border:3px solid var(--edge);padding:10px 8px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.chips button canvas{width:32px;height:32px;flex:none}
+.chips button.on{border-color:var(--green);box-shadow:inset 0 0 0 2px var(--green)}
+.doc{background:#f4f1e8;color:#1d232a;border:3px solid var(--edge);padding:12px;font-size:15px}
+.doc h3{margin:0 0 6px;font-size:16px}.doc ol{margin:0;padding-left:20px}.doc .row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed #b8b2a0;padding:4px 0}
+.checks{display:flex;flex-direction:column;gap:6px}
+.checks button{font:inherit;font-size:15px;text-align:left;color:var(--text);background:var(--panel2);border:3px solid var(--edge);padding:9px 10px;cursor:pointer}
+.checks button.on{border-color:var(--green)}.checks button.on::before{content:'✓ ';color:var(--green);font-weight:700}
+.big{font-family:var(--display);font-size:26px;color:var(--yel)}
+.coletor{background:#1b1f24;border:6px solid #2b2f3a;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px}.coletor .cbar{font-weight:800;font-size:13px;color:#0d1a10;background:#5cc26b;padding:4px 8px;border-radius:4px}.coletor h2{font-size:16px;color:var(--text)}
+.doc.pf{font-size:14px}.pfh{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #1d232a;padding-bottom:4px;margin-bottom:4px}.pfh b{font-size:16px}.pfh span{font-size:12px;background:#2f7a45;color:#fff;padding:2px 6px}
+.carimbo{margin:8px auto 0;width:fit-content;border:3px solid #c0392b;color:#c0392b;font-weight:800;padding:4px 10px;transform:rotate(-4deg)}
+.code{font-family:var(--display);font-size:20px;letter-spacing:.1em;background:var(--panel2);border:2px dashed var(--yel);padding:6px 12px}
+.golpe{font-size:22px;padding:14px}
+</style>
+<div class="app">
+  <div class="top"><div><div class="brand">Semana da Qualidade</div><div class="fase" id="faseNome">Fase 2 · Logística</div></div><div class="prog" id="prog"></div></div>
+  <div class="sc"><canvas id="cena" class="px" width="160" height="100" aria-label="Cena do jogo"></canvas><div class="labs" id="labs" aria-hidden="true"></div></div>
+  <div class="dlg" id="dlg"><canvas id="ritaCv" class="px" width="12" height="19" aria-hidden="true"></canvas>
+    <div><div class="nm" id="nm">Laryssa <span>RH</span></div><p id="txt" aria-live="polite"></p><div class="acts" id="acts"></div></div></div>
+</div>
+<div class="ov" id="ov" hidden><div class="card" id="card"></div></div>
+<script>
+const SKIN=['#f3cba8','#dca47c','#b97c4e','#8e5b37','#5e3a22'];
+const HAIR=['#2b1d14','#5a3a1e','#8a5a2b','#d9b25a','#141414','#b8b8b8'];
+const LOOK={
+  operador:{hel:'#f4f4f4',sh:'#c3cad1',pa:'#2b3b5e',st:1},
+  preparador:{hel:'#f4f4f4',sh:'#c3cad1',pa:'#3b3b44',st:1,tool:'wrench'},
+  lider:{hel:'#f4f4f4',sh:'#d04a42',pa:'#2b2f3a',tool:'board'},
+  inspetor:{hel:'#f4f4f4',sh:'#8fdc98',pa:'#394451',tool:'board'},
+  tecnico:{hel:'#f4f4f4',sh:'#4b535d',pa:'#2a2e35',st:1,tool:'wrench'},
+  metrologista:{hel:null,sh:'#2f7a45',pa:'#34425a',tool:'caliper',glasses:1},
+  empilhadeira:{hel:'#f4f4f4',sh:'#3f6fb5',pa:'#2b3b5e',st:1},
+  comprador:{hel:'#f4f4f4',sh:'#f7f7f7',pa:'#2b2f3a',tie:'#2c5190',tool:'board'},
+  rh:{hel:null,sh:'#1c2a4a',pa:'#2b2f3a',tool:'board'}
+};
+const PCOL={p400:['#3f6f9e','#6a98c6','#2c4f73'],p600:['#4d8a5c','#74b183','#356441'],p800:['#a4513b','#cc7a62','#76382a']};
+
+// ---------- personagem 10x16 ----------
+function drawGuy(c,X,Y,s,o){
+  o=o||{};
+  const L=LOOK[s.role]||LOOK.operador, lk=s.look||{sk:1,hc:0,hs:0};
+  const sk=SKIN[lk.sk%5], hc=HAIR[lk.hc%6], fl=o.face===-1;
+  const P=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(X+(fl?10-x-w:x),Y+y,w,h);};
+  const K='#1b1420';
+  // cabelo atrás / rabo
+  if(lk.hs===3)P(8,3,1,3,hc);
+  // cabeça
+  P(2,3,6,4,sk);
+  if(L.hel){P(3,0,4,1,L.hel);P(2,1,6,2,L.hel);P(1,2,8,1,L.hel);P(3,0,2,1,'#ffffff55');}
+  else{P(3,0,4,1,hc);P(2,1,6,2,hc);}
+  if(lk.hs!==2){P(2,3,1,1,hc);P(7,3,1,1,hc);}
+  if(lk.hs===1){P(2,4,1,2,hc);P(7,4,1,2,hc);}
+  const blink=o.blink;
+  if(L.glasses){P(3,4,4,1,'#39424c');P(3,4,1,1,blink?sk:'#dfe7ee');P(6,4,1,1,blink?sk:'#dfe7ee');}
+  else{P(3,4,1,1,blink?sk:K);P(6,4,1,1,blink?sk:K);}
+  P(4,6,2,1,'#00000033');
+  // corpo
+  P(4,7,2,1,sk);P(2,7,2,1,L.sh);P(6,7,2,1,L.sh);
+  P(2,8,6,4,L.sh);
+  if(L.st)P(2,10,6,1,'#d4dde3');
+  if(L.tie){P(4,8,2,1,L.tie);P(4,9,2,3,L.tie);P(4,11,2,1,'#1d3a6b');}
+  // braços
+  const up=o.work&&o.arm;
+  if(up){P(1,6,1,3,L.sh);P(8,6,1,3,L.sh);P(1,5,1,1,sk);P(8,5,1,1,sk);}
+  else{P(1,8,1,3,L.sh);P(8,8,1,3,L.sh);P(1,11,1,1,sk);P(8,11,1,1,sk);}
+  // ferramenta
+  if(L.tool==='board'&&!up){P(8,9,2,3,'#8a5a2b');P(9,9,1,2,'#f1ece0');}
+  if(L.tool==='wrench'){if(up)P(8,3,1,3,'#aab4bd');else{P(9,9,1,3,'#aab4bd');P(8,12,2,1,'#aab4bd');}}
+  if(L.tool==='caliper'&&!up){P(9,7,1,5,'#c9d3da');P(8,7,1,1,'#c9d3da');}
+  // pernas
+  P(2,12,6,1,'#241c18');
+  if(o.walk&&o.step){P(2,13,2,2,L.pa);P(6,13,2,2,L.pa);P(1,15,3,1,K);P(6,15,3,1,K);}
+  else{P(3,13,2,2,L.pa);P(5,13,2,2,L.pa);P(3,15,2,1,K);P(5,15,2,1,K);}
+}
+
+// ---------- prensa 26x34 ----------
+function drawPressSm(c,x,y,p,t,spd){
+  const F=(a,b,w,h,col)=>{c.fillStyle=col;c.fillRect(x+a,y+b,w,h);};
+  const [m,hi,sh]=PCOL[p.tipo];
+  const big=p.tipo==='p800'?1:0;
+  F(1,32,24,2,'#00000055');
+  F(3,8,4,23,m);F(3,8,1,23,hi);F(6,8,1,23,sh);
+  F(19,8,4,23,m);F(19,8,1,23,hi);F(22,8,1,23,sh);
+  F(1-big,1,24+2*big,8,m);F(1-big,1,24+2*big,1,hi);F(1-big,8,24+2*big,1,sh);
+  F(10,3,6,3,'#f2c230');F(11,4,4,1,'#8a6f1e');
+  let s=0;
+  if(p.st==='run'){const g=PRESSES[p.tipo].gpm*spd;const ph=(t/1000)*(Math.min(g,110)/60)*Math.PI*2;s=Math.round(6*(0.5-0.5*Math.cos(ph)));}
+  else if(p.st==='setup'){s=1;}
+  F(12,9,2,2+s,'#95a3b0');
+  F(7,11+s,12,4,'#8a97a3');F(7,11+s,12,1,'#b7c3cd');F(7,14+s,12,1,'#58636e');
+  F(9,15+s,8,1,'#58636e');
+  F(1,26,24,6,m);F(1,26,24,1,hi);F(1,31,24,1,sh);
+  F(8,23,10,3,'#6d7a87');F(8,23,10,1,'#95a3b0');
+  if(p.st==='run'||p.st==='setup')F(5,22,16,1,'#c9d3da');
+  if(p.st==='broken'&&Math.floor(t/250)%2){F(12,17,1,1,'#fff4c0');F(15,19,1,1,'#ffd05e');F(9,20,1,1,'#ffd05e');}
+  if(p.st==='broken'){const f=(t/120)%6;F(4+f%3,-2-Math.floor(f/2),2,2,'#6d737a88');}
+  // andon
+  F(22,-7,3,9,'#0a0d10');
+  const bl=Math.floor(t/400)%2===0;
+  const on={run:[0,0,1],setup:[0,1,0],nomat:[0,bl,0],exped:[0,bl,0],broken:[bl,0,0],noop:[1,0,0]}[p.st]||[0,0,0];
+  const LC=[['#ec5a50','#3a1614'],['#f2c230','#3a3010'],['#5cc26b','#15321a']];
+  LC.forEach((cc,i)=>F(23,-6+i*3,1,2,on[i]?cc[0]:cc[1]));
+  if(p.st==='pm')F(23,-6,1,8,bl?'#55a3e6':'#1a3550');
+}
+
+function rolo(F,cx,cy,r,ext,mid){const R=Math.ceil(r),furo=Math.max(0.8,r*0.24);
+  for(let yy=-R;yy<=R;yy++)for(let xx=-R;xx<=R;xx++){const d2=xx*xx+yy*yy;if(d2>r*r)continue;const d=Math.sqrt(d2);let col;
+    const luz=-(xx*0.8+yy)/r;
+    if(d<=furo)col='#22272e';
+    else if(d>=r-0.85)col=ext;
+    else{col=luz>0.5?'#eef3f7':luz<-0.5?'#8996a1':mid;
+      if(r>=4&&Math.floor((d-furo)*1.25)%2===1)col=luz>0.5?'#d3dce3':luz<-0.5?'#7a8692':'#a3afba';}
+    if(r>=4&&xx===1&&yy<0&&d>furo&&d<r-0.85)col='#3f6fb5';
+    F(cx+xx,cy+yy,1,1,col);}}
+// pátio de bobinas na doca: piso demarcado, berços de madeira e bobinas empilhadas
+
+// ================== CONFIGURAÇÃO ==================
+// Endereço do Apps Script que grava as respostas (termina em /exec). Vazio = modo teste, guarda só no aparelho.
+const ENVIO_URL = 'https://script.google.com/macros/s/AKfycbwiLznOS_QZDKPjZ-mr9LW5UVFypfAKD5f2VO-ozjkEwBJveuFn2vLPmPus1Glu-nSS/exec';
+const FASE = 2, FASE_NOME = 'Operador logístico';
+const KEY = 'sq2026-fase' + FASE;
+// Perguntas da fase. O gabarito NÃO fica aqui: ele fica só na planilha de correção.
+const PERGUNTAS = [
+  {id:'F2P1', t:'Você chegou atrasado e a produção já está pedindo bobina. A empilhadeira foi usada no turno anterior sem problemas. O que fazer?',
+   o:{a:'Usar direto, já que o turno anterior não relatou nada',b:'Fazer o checklist da empilhadeira antes de usar, verificando segurança e funcionamento',c:'Fazer o primeiro abastecimento e o checklist logo depois',d:'Pedir para o colega do turno anterior assinar o checklist por você'}},
+  {id:'F2P2', t:'Você vai levar um palete alto de peças até a expedição. O que verificar antes de sair?',
+   o:{a:'Só se o palete cabe nos garfos',b:'Se a etiqueta do cliente está no palete',c:'O peso, a estabilidade da carga e as condições do trajeto',d:'Se tem alguém olhando, para ajudar a guiar'}},
+  {id:'F2P3', t:'A paleteira elétrica está ocupada e você precisa levar uma caixa pesada até a prensa, a 30 metros. O que fazer?',
+   o:{a:'Arrastar a caixa pelo chão, é perto',b:'Pedir ajuda a um colega e carregar no braço',c:'Empurrar a caixa com os garfos de outra empilhadeira desligada',d:'Esperar ou buscar o equipamento adequado e seguir o procedimento de movimentação'}},
+  {id:'F2P4', t:'Na conferência você encontra 3 caixas a menos do que o sistema mostra e uma caixa amassada. Para que serve essa conferência?',
+   o:{a:'Para descobrir quem pegou as caixas',b:'Para identificar diferenças de quantidade e possíveis avarias e tratar antes que virem problema',c:'Só para cumprir a auditoria de fim de mês',d:'Para ajustar o sistema e deixar igual ao físico, sem registrar nada'}},
+  {id:'F2P5', t:'Você vê um botão azul (adesivo redondo) assinado na etiqueta de uma embalagem de peças prontas. O que ele indica?',
+   o:{a:'Que as peças têm prioridade na expedição',b:'Que a embalagem está bloqueada pela qualidade',c:'Que o saldo físico daquelas peças foi conferido com o saldo do sistema, e por quem',d:'Que a embalagem já foi faturada para o cliente'}},
+  {id:'F2P6', t:'No estoque há dois lotes da mesma bobina: um recebido há 3 semanas, no fundo, e um que chegou ontem, na frente. A prensa pediu uma bobina. Qual levar?',
+   o:{a:'A de ontem, que está mais fácil de pegar',b:'A de 3 semanas, seguindo o FIFO: primeiro que entra, primeiro que sai',c:'Tanto faz, o aço é o mesmo',d:'A de ontem, porque está mais nova e sem oxidação'}},
+  {id:'F2P7', t:'Você abasteceu a prensa com uma bobina para a ordem de produção que vai começar. O que garante que esse consumo fique registrado na OP certa?',
+   o:{a:'Fazer a amarração do material à OP no coletor, garantindo os apontamentos',b:'Anotar o número da bobina num papel e entregar ao líder',c:'Nada, o sistema descobre sozinho pelo consumo',d:'Apontar o consumo no fim do mês, junto com o inventário'}},
+  {id:'F2P8', t:'Você encontra uma bobina sem etiqueta no estoque, parecida com a que a prensa pediu. O que fazer?',
+   o:{a:'Usar, porque é igual às outras do mesmo lugar',b:'Colocar a etiqueta de uma bobina parecida',c:'Não usar: separar a bobina e acionar a qualidade',d:'Levar para a prensa e deixar o operador decidir'}}
+];
+const SETORES=['Produção','Logística','Manutenção','Ferramentaria','Qualidade','Engenharia','Administrativo','Outro'];
+
+// ================== ESTADO E ENVIO ==================
+let ST={jog:null,resp:{},cap:0,ini:0,fim:0};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)ST=r;}catch(e){}
+const salvar=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}};
+function enviar(dados){
+  if(!/^https:\/\//.test(ENVIO_URL))return;
+  const corpo=JSON.stringify({...dados,fase:FASE,matricula:ST.jog.matricula,nome:ST.jog.nome,setor:ST.jog.setor,ts:new Date().toISOString()});
+  fetch(ENVIO_URL,{method:'POST',body:corpo}).catch(()=>{ST.pend=(ST.pend||[]).concat([corpo]);salvar();});
+}
+function reenviarPendentes(){if(!ST.pend||!ST.pend.length||!/^https:\/\//.test(ENVIO_URL))return;const p=ST.pend;ST.pend=[];salvar();p.forEach(c=>fetch(ENVIO_URL,{method:'POST',body:c}).catch(()=>{ST.pend.push(c);salvar();}));}
+// embaralha as alternativas de forma fixa para cada pessoa (recarregar não muda a ordem)
+function hash(s){let h=2166136261;for(const ch of s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}return h;}
+function ordem(id){let x=hash((ST.jog?ST.jog.matricula:'')+id)||1;const k=['a','b','c','d'];for(let i=3;i>0;i--){x=Math.imul(x^(x>>>15),2246822507)>>>0;const j=x%(i+1);[k[i],k[j]]=[k[j],k[i]];}return k;}
+
+
+// ================== CENA ==================
+// Nome da empresa na fachada ('' = genérico)
+const EMPRESA='ITAESBRA';
+const PRESSES={p400:{gpm:20},p600:{gpm:16},p800:{gpm:12}};
+const cv=document.getElementById('cena'),cx=cv.getContext('2d'),W=160,H=100;
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let CENA='planta',HOT=[],SPARK=[];
+const AT={};
+const PR={press:{tipo:'p600',st:'idle'},golpeAte:0,pecas:0,suspeita:false,bagunca:[],carro:0,caminhao:-1};
+function ator(id,role,look,x,y,show=true){AT[id]={id,role,look,x,y,tx:x,ty:y,face:1,show,epi:false,res:null,walk:false};return AT[id];}
+function andar(id,x,y){return new Promise(r=>{const a=AT[id];a.show=true;a.tx=x;a.ty=y;a.res=r;if(RM){a.x=x;a.y=y;}});}
+const esperar=ms=>new Promise(r=>setTimeout(r,RM?Math.min(ms,150):ms));
+const F=(x,y,w,h,c)=>{cx.fillStyle=c;cx.fillRect(Math.round(x),Math.round(y),w,h);};
+const txt=(s,x,y,c,sz=5)=>{cx.fillStyle=c;cx.font=`${sz}px monospace`;cx.fillText(s,x,y);};
+
+function fundoPlanta(t){
+  F(0,0,W,H,'#7fb2e5');F(0,0,W,12,'#9cc6ee');
+  for(const [x,y] of [[20,10],[110,6],[140,14]]){F(x,y,14,3,'#e9f2fb');F(x+3,y-2,8,2,'#e9f2fb');}
+  F(0,70,W,30,'#5a6470');F(0,70,W,1,'#7a8592');for(let x=0;x<W;x+=12)F(x+2,84,6,1,'#f2c230');
+  // telhado shed (dente de serra), no desenho dos triângulos da marca
+  for(let i=0;i<6;i++){const x0=18+i*21-(i===5?1:0),w=i===5?22:21;
+    for(let k=0;k<w;k++){const h=Math.round(1+k*11/(w-1));F(x0+k,26-h,1,h,'#e8401c');}
+    F(x0+w-1,15,1,11,'#9cd0f0');F(x0+w-2,15,1,11,'#c52f10');}
+  F(18,26,124,44,'#c3cad1');F(18,26,124,1,'#e6ebef');F(18,25,124,1,'#a8301a');
+  for(let x=24;x<136;x+=16)F(x,32,10,7,'#5e87ad');
+  F(64,46,32,24,'#3a4048');for(let y=48;y<70;y+=3)F(66,y,28,1,'#4b535d');
+  // placa com o nome
+  const nome=EMPRESA||'ESTAMPARIA',lw=nome.length*4-1,pw=lw+(EMPRESA?18:8),px=Math.round(80-pw/2);
+  F(px,39,pw,7,'#f7f7f5');F(px,45,pw,1,'#8d99a5');
+  let tx=px+4;if(EMPRESA){for(let i=0;i<3;i++)for(let k=0;k<4;k++)F(tx+i*4+k,44-k,1,k+1,'#e8401c');tx+=14;}
+  letreiro(nome,tx,40,'#e8401c');
+  for(const x of [6,148]){F(x,56,4,14,'#5a3a1e');F(x-4,46,12,12,'#3f8a4a');F(x-2,44,8,3,'#5cc26b');}
+}
+const FONTE3={A:'010101111101101',B:'110101110101110',E:'111100110100111',I:'111010010010111',M:'101111111101101',P:'110101110100100',R:'110101110101101',S:'011100010001110',T:'111010010010010'};
+function letreiro(s,x,y,c){for(const ch of s){const g=FONTE3[ch];if(g)for(let i=0;i<15;i++)if(g[i]==='1')F(x+i%3,y+Math.floor(i/3),1,1,c);x+=4;}}
+function fundoFabrica(){
+  F(0,0,W,30,'#3a4350');F(0,28,W,2,'#00000055');
+  for(let x=36;x<W-8;x+=26){F(x,4,16,8,'#1d2a38');F(x+1,5,6,6,'#5e87ad');F(x+9,5,6,6,'#5e87ad');}
+  F(0,30,W,70,'#2a3038');for(let x=0;x<W;x+=8)F(x,30,1,70,'#2e353e');for(let y=30;y<H;y+=8)F(0,y,W,1,'#2e353e');
+  F(0,88,W,1,'#f2c230');for(let x=0;x<W;x+=6)F(x,88,3,1,'#2a3038');
+}
+function epiIcone(c,k,x,y,s){const P=(a,b,w,h,col)=>{c.fillStyle=col;c.fillRect(x+a*s,y+b*s,w*s,h*s);};
+  if(k==='oculos'){P(1,3,6,2,'#1d232a');P(1,3,2,2,'#7fd0ff');P(5,3,2,2,'#7fd0ff');P(3,3,2,1,'#1d232a');}
+  if(k==='abafador'){P(1,1,6,1,'#d0574f');P(1,1,1,4,'#d0574f');P(6,1,1,4,'#d0574f');P(0,4,2,3,'#d0574f');P(6,4,2,3,'#d0574f');}
+  if(k==='luva'){P(2,1,4,5,'#f2c230');P(1,2,1,3,'#f2c230');P(2,6,4,1,'#9c7a14');P(3,1,1,2,'#d9a21e');}
+  if(k==='botina'){P(1,2,3,4,'#5a3a1e');P(1,5,6,2,'#5a3a1e');P(4,5,3,1,'#8a5a2b');P(1,7,6,1,'#1d232a');}
+}
+const EPIS=[['oculos','Óculos de segurança'],['abafador','Protetor auricular'],['luva','Luva'],['botina','Calçado de segurança']];
+function fundoPosto(t){
+  fundoFabrica();
+  // EPI board na parede
+  F(6,4,26,22,'#f4f4f4');F(6,4,26,4,'#2f7a45');
+  EPIS.forEach(([k],i)=>epiIcone(cx,k,8+(i%2)*12,9+Math.floor(i/2)*8,1));
+  // PF num cavalete
+  F(40,40,1,20,'#6d7a87');F(50,40,1,20,'#6d7a87');F(37,34,17,13,'#f4f1e8');F(37,34,17,3,'#3f6fb5');
+  for(let i=0;i<4;i++)F(39,39+i*2,12-(i%2)*4,1,'#8d99a5');
+  // mesa
+  F(54,62,22,3,'#8a5a2b');F(55,65,2,10,'#5a3a1e');F(73,65,2,10,'#5a3a1e');F(58,59,7,3,'#f4f1e8');F(66,60,6,2,'#f4f1e8');
+  // prensa + desbobinador
+  F(82,46,1,10,'#6d7a87');rolo(F,82,44,5,'#56606a','#bcc7d0');
+  drawPressSm(cx,92,42,PR.press,RM?0:t,1);
+  // terminal do EGA
+  F(128,52,2,24,'#4b535d');F(122,44,14,10,'#1b1f24');F(123,45,12,7,'#1f4f2d');F(125,50,8,1,'#5cc26b');
+  // caixa de peças prontas
+  F(118,80,16,8,'#c99a5b');F(118,80,16,1,'#e0b77c');F(125,80,1,8,'#9b7447');
+  for(let i=0;i<Math.min(PR.pecas,12);i++)F(119+(i%6)*2.5,78-Math.floor(i/6)*2,2,2,'#c3cad1');
+  if(PR.suspeita){F(114,74,4,3,'#c3cad1');F(116,75,1,1,'#ec5a50');balao(113,63,'?','#f0923a');}
+  if(balaoPrensa&&Math.floor(t/400)%2)balao(102,30,'!','#ec5a50');
+  // bagunça do fim do turno
+  for(const b of PR.bagunca)objBagunca(b);
+}
+function objBagunca(b){
+  if(b.k==='caixa'){F(b.x,b.y,8,6,'#c99a5b');F(b.x,b.y,8,1,'#e0b77c');}
+  if(b.k==='chave'){F(b.x,b.y+2,8,1,'#aab4bd');F(b.x+7,b.y,2,2,'#aab4bd');F(b.x+7,b.y+3,2,2,'#aab4bd');}
+  if(b.k==='retalho'){F(b.x,b.y+2,7,2,'#8d99a5');F(b.x+2,b.y+1,4,1,'#c3cad1');}
+  if(b.k==='garrafa'){F(b.x+1,b.y,2,1,'#3f6fb5');F(b.x,b.y+1,4,6,'#7fd0ff');F(b.x,b.y+3,4,1,'#3f6fb5');}
+}
+function balao(x,y,ch,col){F(x,y,7,8,'#f1ece0');F(x+1,y-1,5,1,'#f1ece0');F(x+1,y+8,5,1,'#f1ece0');F(x+2,y+9,2,1,'#f1ece0');
+  if(ch==='!'){F(x+3,y+1,1,4,col);F(x+3,y+6,1,1,col);}else{F(x+2,y+1,3,1,col);F(x+4,y+2,1,2,col);F(x+3,y+4,1,1,col);F(x+3,y+6,1,1,col);}}
+function fundoDoca(t){
+  fundoFabrica();F(0,62,W,38,'#232830');for(let x=0;x<W;x+=6)F(x,62,3,1,'#f2c230');
+  F(W-14,34,14,52,'#15191e');for(let y=36;y<86;y+=4)F(W-14,y,14,2,y%8<4?'#f2c230':'#15191e');
+  const k=PR.caminhao<0?0:Math.min(1,PR.caminhao);const x=W+4-k*70,y=66;
+  F(x,y,40,14,'#e9edf0');F(x,y+5,40,2,'#f2c230');F(x+40,y+4,10,10,'#3f6fb5');F(x+43,y+5,5,4,'#9cc0de');
+  for(const wx of [5,28,42])F(x+wx,y+14,6,5,'#15191e');
+  for(let i=0;i<3;i++){F(30+i*12,72,10,8,'#c99a5b');F(30+i*12,72,10,1,'#e0b77c');F(30+i*12,80,10,2,'#8a5a2b');}
+}
+function fundoMontadora(t){
+  F(0,0,W,H,'#2b2f3a');F(0,0,W,22,'#3a4350');for(let x=8;x<W;x+=24)F(x,4,14,8,'#e6ebef');
+  F(0,74,W,8,'#4b535d');for(let x=(t/40)%12-12;x<W;x+=12)F(x,74,6,8,'#3a3f47');
+  const cxr=40+Math.sin(t/900)*2;
+  // SUV compacto genérico: carroceria alta, teto reto, para-choques escuros e rodas grandes
+  const C='#3f7f8f',CL='#5fa3b3',CD='#2c5a66';
+  F(cxr+2,48,78,16,C);F(cxr+2,48,78,2,CL);F(cxr+2,62,78,2,CD);
+  F(cxr+12,34,56,15,C);F(cxr+12,34,56,2,CL);F(cxr+10,32,60,2,'#2b2f3a');
+  F(cxr+15,37,22,10,'#9cc0de');F(cxr+40,37,24,10,'#9cc0de');F(cxr+38,37,2,11,C);F(cxr+16,38,6,2,'#d6ecff');F(cxr+41,38,6,2,'#d6ecff');
+  F(cxr,58,8,7,'#2b2f3a');F(cxr+74,58,8,7,'#2b2f3a');F(cxr+76,51,4,3,'#ffe07a');F(cxr,51,3,3,'#d0574f');
+  for(const wx of [12,52]){F(cxr+wx-1,58,16,4,'#2b2f3a');}
+  for(const wx of [12,52]){const cxw=cxr+wx+6,cyw=66;for(let yy=-7;yy<=7;yy++)for(let xx=-7;xx<=7;xx++){const d=xx*xx+yy*yy;if(d>49)continue;F(cxw+xx,cyw+yy,1,1,d<=6?'#c3cad1':d<=16?'#6d7a87':'#15191e');}}
+  const pis=Math.floor(t/350)%2;F(cxr+30,54,18,6,pis?'#f2c230':'#c3cad1');if(pis){F(cxr+29,53,20,1,'#ffe07a');F(cxr+29,60,20,1,'#ffe07a');}
+}
+function guyEPI(a){const X=Math.round(a.x-5),Y=Math.round(a.y-16);
+  F(X+3,Y+4,4,1,'#1d232a');F(X+3,Y+4,1,1,'#7fd0ff');F(X+6,Y+4,1,1,'#7fd0ff');
+  F(X+1,Y+3,1,3,'#d0574f');F(X+8,Y+3,1,3,'#d0574f');}
+// ---------- cenas da logística ----------
+const CXPA=[[63,62],[74,62],[63,71],[74,71]];
+const LG={botaoN:0,semEtiqueta:false,loteA:4,loteB:3,caixa:false,paleteira:'longe',bobPrensa:0,recebe:-1,avaria:false,botao:false};
+// empilhadeira com o operador; carga 'bobina' ou 'palete' nos garfos
+function drawForklift(x,y,face,carry,a,t){
+  const fl=face===-1,X=Math.round(x),Y=Math.round(y);
+  const P=(dx,dy,w,h,c)=>{cx.fillStyle=c;cx.fillRect(fl?X-dx-w:X+dx,Y+dy,w,h);};
+  P(-11,-1,24,2,'#00000044');
+  drawGuy(cx,fl?X-1:X-9,Y-21,{role:'empilhadeira',look:a.look},{face,blink:Math.floor(t/100)%41===0});
+  P(-8,-22,1,12,'#3a3f47');P(1,-22,1,12,'#3a3f47');P(-8,-22,10,1,'#3a3f47');
+  P(-11,-11,3,8,'#3a3f47');
+  P(-9,-10,13,7,'#f2c230');P(-9,-10,13,1,'#ffe07a');P(-9,-4,13,1,'#9c7a14');P(-7,-8,3,2,'#1b1420');
+  P(-8,-3,4,3,'#15191e');P(0,-3,4,3,'#15191e');P(-7,-2,2,1,'#6d7a87');P(1,-2,2,1,'#6d7a87');
+  const lift=carry?-5:0;
+  P(5,-20,2,18,'#6d7a87');P(6,-20,1,18,'#95a3b0');P(6,-2+lift,8,1,'#aab4bd');
+  if(carry==='bobina')rolo((xx,yy,w,h,c)=>P(xx-X,yy-Y,w,h,c),X+(fl?-11:11),Y-7+lift,4.6,'#56606a','#bcc7d0');
+  if(carry==='palete'){P(6,-3+lift,8,1,'#8a5a2b');P(6,-9+lift,8,6,'#c99a5b');P(9,-9+lift,1,6,'#9b7447');P(6,-6+lift,8,1,'#9b7447');}
+}
+function etiqueta(x,y,ok){F(x,y,4,3,ok?'#f4f4f4':'#ec5a50');if(ok)F(x+1,y+1,2,1,'#1d232a');}
+function fundoEstoque(t){
+  fundoFabrica();
+  // estante: lote A (mais antigo) na prateleira de cima, lote B (novo) embaixo, perto do corredor
+  F(6,34,1,38,'#3f6fb5');F(57,34,1,38,'#3f6fb5');F(6,48,52,2,'#f0923a');F(6,70,52,2,'#f0923a');
+  for(let i=0;i<LG.loteA;i++){rolo(F,13+i*12,43,5,'#56606a','#bcc7d0');etiqueta(11+i*12,36,true);}
+  for(let i=0;i<LG.loteB;i++){rolo(F,13+i*12,64,5,'#56606a','#bcc7d0');etiqueta(11+i*12,57,true);}
+  // embalagens de peças prontas; o botão azul (adesivo) vai na etiqueta delas depois da conferência de saldo
+  CXPA.forEach(([bx,by],i)=>{F(bx,by,10,8,'#c99a5b');F(bx,by,10,1,'#e0b77c');F(bx+5,by,1,8,'#9b7447');F(bx+1,by+2,4,3,'#f4f4f4');F(bx+2,by+3,2,1,'#1d232a');
+    if(i<LG.botaoN){F(bx+6,by+2,3,3,'#2a5fbf');F(bx+7,by+2,1,1,'#9cc6ff');}});
+  // bobina sem etiqueta
+  if(LG.semEtiqueta){rolo(F,92,70,5,'#56606a','#bcc7d0');if(Math.floor(t/400)%2)balao(88,56,'?','#f0923a');}
+  if(LG.bloqueada){F(86,62,12,2,'#ec5a50');for(let k=0;k<12;k+=4)F(86+k,62,2,2,'#f4f4f4');F(89,65,6,3,'#ec5a50');}
+  // prensa e terminal do EGA
+  drawPressSm(cx,112,42,PR.press,RM?0:t,1);
+  if(LG.bobPrensa){F(108,46,1,10,'#6d7a87');rolo(F,108,44,5,'#56606a','#bcc7d0');}
+  F(148,52,2,24,'#4b535d');F(142,44,14,10,'#1b1f24');F(143,45,12,7,'#1f4f2d');F(145,50,8,1,'#5cc26b');
+  // caixa pesada e paleteira
+  if(LG.caixa){F(56,76,12,9,'#c99a5b');F(56,76,12,1,'#e0b77c');F(61,76,1,9,'#9b7447');txt('45kg',57,82.5,'#1d232a',4);}
+  const px=LG.paleteira==='longe'?-30:LG.paleteira==='aqui'?40:LG.paleteira==='prensa'?100:-30;
+  if(px>-20){F(px,85,12,1,'#d04a42');F(px,86,12,1,'#8a2a24');F(px+1,87,2,1,'#15191e');F(px+9,87,2,1,'#15191e');F(px-2,78,1,8,'#d04a42');F(px-3,78,2,1,'#2b2f3a');
+    if(LG.caixaNaPaleteira){F(px+1,76,11,9,'#c99a5b');F(px+1,76,11,1,'#e0b77c');}}
+}
+function fundoRecebe(t){
+  fundoFabrica();F(0,62,W,38,'#232830');for(let x=0;x<W;x+=6)F(x,62,3,1,'#f2c230');
+  F(W-14,34,14,52,'#15191e');for(let y=36;y<86;y+=4)F(W-14,y,14,2,y%8<4?'#f2c230':'#15191e');
+  const k=LG.recebe<0?0:Math.min(1,LG.recebe);const x=W+4-k*78,y=60;
+  F(x,y,46,4,'#6d7a87');F(x+46,y-8,12,12,'#d0574f');F(x+49,y-6,6,4,'#9cc0de');for(const wx of [6,30,48])F(x+wx,y+4,6,5,'#15191e');
+  if(!LG.descarregado)for(let i=0;i<4;i++)rolo(F,x+7+i*11,y-5,5,'#56606a','#bcc7d0');
+  if(LG.descarregado)for(let i=0;i<4;i++){const bx=22+i*14;rolo(F,bx,78,5.5,'#56606a','#bcc7d0');etiqueta(bx-2,70,true);
+    if(i===2){F(bx+2,76,3,1,'#f0923a');F(bx+3,77,2,2,'#f0923a');if(LG.avaria&&Math.floor(t/400)%2)balao(bx-3,60,'!','#f0923a');}}
+  // nota fiscal na prancheta
+  F(6,40,12,16,'#8a5a2b');F(7,41,10,14,'#f4f1e8');for(let i=0;i<5;i++)F(8,43+i*2,8-(i%2)*3,1,'#8d99a5');
+}
+const LABS={estoque:[['Lote A · 05/10',32,24],['Lote B · 27/10',32,73],['Peças prontas',74,81],['Prensa',125,77],['EGA',149,55]],recebe:[['Nota fiscal',12,57],['Recebimento',60,32]],planta:[],doca:[['Expedição',80,40]],montadora:[['Linha de montagem do cliente',80,26],['Sua peça está aqui',80,84]]};
+let labsDe=null;
+function rotulos(){if(labsDe===CENA)return;labsDe=CENA;document.getElementById('labs').innerHTML=(LABS[CENA]||[]).map(([n,x,y])=>`<span style="left:${x/W*100}%;top:${y/H*100}%">${n}</span>`).join('');}
+function desenhar(t){rotulos();
+  ({planta:fundoPlanta,posto:fundoPosto,doca:fundoDoca,montadora:fundoMontadora,estoque:fundoEstoque,recebe:fundoRecebe})[CENA](t);
+  if(CENA!=='montadora'){
+    const lista=Object.values(AT).filter(a=>a.show).sort((a,b)=>a.y-b.y);
+    for(const a of lista){if(a.fork){drawForklift(a.x,a.y,a.face,a.carry,a,t);continue;}const X=Math.round(a.x-5),Y=Math.round(a.y-16);F(X+2,Math.round(a.y)-1,7,2,'#00000044');
+      drawGuy(cx,X,Y,{role:a.role,look:a.look},{face:a.face,walk:a.walk,step:Math.floor(t/150)%2,blink:Math.floor(t/100)%40===0});
+      if(a.epi)guyEPI(a);
+      if(a.fala&&Math.floor(t/400)%2)balao(X+2,Y-11,'!','#9b6fd1');}
+  }
+  // ponto de toque piscando
+  for(const h of HOT){const on=Math.floor(t/350)%2;cx.strokeStyle=on?'#f2c230':'#fff4c0';cx.lineWidth=1;cx.strokeRect(h.x-1.5,h.y-1.5,h.w+3,h.h+3);
+    if(on){F(h.x+h.w/2-1,h.y-7,3,3,'#f2c230');F(h.x+h.w/2,h.y-4,1,2,'#f2c230');}}
+  SPARK=SPARK.filter(s=>{s.t-=1/30;s.x+=s.vx;s.y+=s.vy;s.vy+=0.08;F(s.x,s.y,1,1,s.c);return s.t>0;});
+}
+function faiscas(x,y,n=12,c=['#f2c230','#fff4c0','#5cc26b']){for(let i=0;i<n;i++)SPARK.push({x,y,vx:(Math.random()-0.5)*1.6,vy:-Math.random()*1.6,t:0.6+Math.random()*0.5,c:c[i%c.length]});}
+let ult=performance.now();
+function loop(t){const dt=Math.min(0.1,(t-ult)/1000);ult=t;
+  for(const a of Object.values(AT)){
+    const dx=a.tx-a.x,dy=a.ty-a.y;const v=34*dt;
+    if(Math.abs(dx)>0.5){a.x+=Math.sign(dx)*Math.min(Math.abs(dx),v);a.face=dx>0?1:-1;a.walk=true;}
+    else if(Math.abs(dy)>0.5){a.x=a.tx;a.y+=Math.sign(dy)*Math.min(Math.abs(dy),v);a.walk=true;}
+    else{a.x=a.tx;a.y=a.ty;a.walk=false;if(a.res){const r=a.res;a.res=null;r();}}
+  }
+  if(PR.press.st==='run'&&t>PR.golpeAte)PR.press.st=PR.press.trava||'idle';
+  if(PR.caminhao>=0&&PR.caminhao<1)PR.caminhao+=dt*0.5;
+  desenhar(t);drawLaryssa(t);requestAnimationFrame(loop);}
+cv.addEventListener('click',e=>{const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*W,y=(e.clientY-r.top)/r.height*H;
+  const h=HOT.find(h=>x>=h.x-4&&x<=h.x+h.w+4&&y>=h.y-4&&y<=h.y+h.h+4);if(h){h.res(h);}});
+
+// ================== DIÁLOGO, TOQUES, PERGUNTAS ==================
+const LARYSSA={role:'rh',look:{sk:1,hc:1,hs:3}};
+const ritaCv=document.getElementById('ritaCv').getContext('2d');let falando=false;
+function drawLaryssa(t){ritaCv.clearRect(0,0,12,19);drawGuy(ritaCv,1,2+(Math.floor(t/650)%2&&!falando?1:0),LARYSSA,{face:1,blink:Math.floor(t/100)%40===0,work:falando,arm:Math.floor(t/180)%2});}
+const $=s=>document.querySelector(s);
+let digitando=null;
+function escrever(html){
+  const el=$('#txt');const puro=html.replace(/<[^>]+>/g,'');let n=0;falando=true;clearInterval(digitando);
+  if(RM){el.innerHTML=html;falando=false;return;}
+  digitando=setInterval(()=>{n+=2;if(n>=puro.length){clearInterval(digitando);el.innerHTML=html;falando=false;return;}
+    let out='',vis=0;const re=/(<[^>]+>)|([^<])/g;let m;while((m=re.exec(html))){if(m[1])out+=m[1];else{if(vis>=n)break;out+=m[2];vis++;}}el.innerHTML=out;},28);
+  el.onclick=()=>{clearInterval(digitando);el.innerHTML=html;falando=false;};
+}
+function falar(html,botao='Continuar'){
+  return new Promise(r=>{escrever(html.replace(/\{nome\}/g,primeiro()));const b=document.createElement('button');b.className='btn';b.textContent=botao;
+    b.onclick=()=>{if(falando){clearInterval(digitando);$('#txt').innerHTML=html.replace(/\{nome\}/g,primeiro());falando=false;return;}r();};$('#acts').replaceChildren(b);});
+}
+const primeiro=()=>ST.jog?ST.jog.nome.split(' ')[0]:'';
+function tocar(html,hots){
+  return new Promise(r=>{escrever('<span class="hint">'+html+'</span>');$('#acts').replaceChildren();
+    HOT=hots.map(h=>({...h,res:(x)=>{HOT=HOT.filter(y=>y!==x);if(h.cb)h.cb(x);if(!HOT.length)r();}}));});
+}
+function abrir(html){$('#card').innerHTML=html;$('#ov').hidden=false;$('#card').scrollTop=0;}
+function fechar(){$('#ov').hidden=true;}
+function cartao(html,botao='Continuar',pronto){
+  return new Promise(r=>{abrir(html+`<button class="btn wide" id="cok" ${pronto?'disabled':''}>${botao}</button>`);
+    if(pronto)pronto(()=>{$('#cok').disabled=false;});$('#cok').onclick=()=>{fechar();r();};});
+}
+function atualizarProg(){$('#prog').innerHTML=PERGUNTAS.map(q=>`<i class="${ST.resp[q.id]?'on':''}"></i>`).join('');}
+function perguntar(i,n){
+  const q=PERGUNTAS[i];if(ST.resp[q.id])return Promise.resolve();
+  const ord=ordem(q.id),L='ABCD';
+  return new Promise(r=>{
+    abrir(`<div class="tag">Avaliação do turno · Situação ${n} de ${PERGUNTAS.length}</div><p class="qt">${q.t}</p>
+      <div class="opts">${ord.map((k,j)=>`<button data-k="${k}"><b>${L[j]}</b><span>${q.o[k]}</span></button>`).join('')}</div>
+      <button class="btn wide" id="conf" disabled>Confirmar resposta</button><p class="tiny">Depois de confirmar, não dá para mudar.</p>`);
+    let sel=null;
+    document.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{sel=b.dataset.k;document.querySelectorAll('.opts button').forEach(x=>x.classList.toggle('sel',x===b));$('#conf').disabled=false;});
+    $('#conf').onclick=()=>{
+      ST.resp[q.id]={r:sel,ts:Date.now()};salvar();atualizarProg();enviar({tipo:'resposta',pergunta:q.id,resposta:sel});
+      abrir(`<div class="ok"><div class="chk">✓</div><h2>Resposta registrada</h2></div><button class="btn wide" id="seg">Continuar</button>`);
+      $('#seg').onclick=()=>{fechar();r();};};
+  });
+}
+function golpe(){PR.press.st='run';PR.golpeAte=performance.now()+(RM?50:420);}
+
+// ================== CAPÍTULOS DA FASE 2 ==================
+let OP,EMP,INSP,LIDER,OPP,balaoPrensa=false;
+function montarElenco(){
+  const lk=ST.jog.look||(ST.jog.look={sk:hash(ST.jog.matricula)%5,hc:hash(ST.jog.nome)%6,hs:hash(ST.jog.matricula+'h')%3});
+  OP=ator('op','empilhadeira',lk,70,82);
+  EMP=ator('emp','empilhadeira',lk,95,84,false);EMP.fork=true;EMP.carry=null;
+  ator('rita','rh',LARYSSA.look,40,86);
+  INSP=ator('insp','inspetor',{sk:3,hc:4,hs:1},170,86,false);
+  LIDER=ator('lider','lider',{sk:0,hc:2,hs:2},170,84,false);
+  OPP=ator('opp','operador',{sk:2,hc:0,hs:0},140,86,false);
+}
+function irEstoque(){CENA='estoque';const o=AT.op;o.show=true;o.x=o.tx=98;o.y=o.ty=86;AT.rita.show=true;AT.rita.x=AT.rita.tx=40;AT.rita.y=AT.rita.ty=88;EMP.show=false;}
+function subir(){AT.op.show=false;EMP.show=true;EMP.x=EMP.tx=AT.op.x+6;EMP.y=EMP.ty=86;}
+function descer(){AT.op.x=AT.op.tx=EMP.x-8;AT.op.y=AT.op.ty=88;AT.op.show=true;EMP.show=false;}
+function botoes(lista){return new Promise(r=>{let i=0;escrever('<span class="hint">Faça na ordem certa:</span>');
+  const bs=lista.map((t,k)=>{const b=document.createElement('button');b.className='btn';b.textContent=t;b.disabled=k>0;
+    b.onclick=()=>{b.disabled=true;i++;if(lista.cb)lista.cb(k);if(i<bs.length)bs[i].disabled=false;else r();};return b;});
+  $('#acts').replaceChildren(...bs);});}
+const CAP=[
+  async()=>{ // chegada
+    CENA='planta';AT.op.x=AT.op.tx=-8;AT.op.y=AT.op.ty=88;AT.rita.x=AT.rita.tx=80;AT.rita.y=AT.rita.ty=86;
+    await andar('op',62,88);
+    await falar('Oi de novo, <b>{nome}</b>! Hoje você troca a camisa: vai viver um turno como <b>operador logístico</b>, quem faz o material chegar no lugar certo, na hora certa.');
+    await falar('Mesma regra de ontem: preste atenção, porque no fim do turno tem a <b>avaliação com 8 situações</b>. Bora para o estoque?','Entrar no estoque');
+    await Promise.all([andar('op',80,72),andar('rita',84,72)]);
+  },
+  async()=>{ // checklist da empilhadeira
+    irEstoque();EMP.show=true;EMP.x=EMP.tx=104;EMP.y=EMP.ty=86;OP.show=false;
+    OP.show=true;OP.x=OP.tx=70;OP.y=OP.ty=86;
+    await falar('Essa é a sua ferramenta de trabalho: a <b>empilhadeira</b>. Antes de usar, todo turno, quem vai operar faz o <b>checklist</b>. Mesmo que o turno anterior diga que está tudo certo.');
+    await tocar('Toque na empilhadeira.',[{x:93,y:62,w:22,h:24}]);
+    const itens=['Freio e freio de mão','Buzina e alarme de ré','Garfos sem trinca nem empeno','Sem vazamento de óleo ou gás','Luzes funcionando','Cinto de segurança'];const m=new Set();
+    await cartao(`<div class="tag">Checklist da empilhadeira</div><h2>Verifique cada item</h2><div class="checks">${itens.map((t,i)=>`<button data-i="${i}">${t}</button>`).join('')}</div>`,'Assinar o checklist',(ok)=>{
+      document.querySelectorAll('.checks button').forEach(b=>b.onclick=()=>{b.classList.add('on');m.add(b.dataset.i);if(m.size===itens.length)ok();});});
+    faiscas(104,70);
+    await falar('Empilhadeira liberada. Se algum item falhar, ela não roda: avisa o líder e a manutenção. Checklist é de quem vai operar, e é <b>antes</b> do primeiro serviço.');
+    EMP.show=false;
+  },
+  async()=>{ // recebimento e conferência
+    CENA='recebe';LG.recebe=0;LG.descarregado=false;LG.avaria=false;Object.values(AT).forEach(a=>a.show=false);
+    AT.op.show=true;AT.op.x=AT.op.tx=14;AT.op.y=AT.op.ty=90;AT.rita.show=true;AT.rita.x=AT.rita.tx=4;AT.rita.y=AT.rita.ty=92;
+    await falar('Chegou o caminhão do fornecedor com bobinas. Antes de dar entrada, vem a <b>conferência</b>.');
+    await esperar(1800);LG.descarregado=true;
+    await tocar('Toque na nota fiscal para conferir.',[{x:6,y:40,w:12,h:16}]);
+    await cartao(`<div class="tag">Conferência de recebimento</div><div class="doc"><h3>Nota fiscal x material</h3>
+      <div class="row"><span>Material</span><b>MORL1997 · LAC340Y410T GI 60/60U · 2,0 mm</b></div><div class="row"><span>Quantidade na nota</span><b>4 bobinas</b></div>
+      <div class="row"><span>Quantidade recebida</span><b>4 bobinas ✓</b></div><div class="row"><span>Certificado do material</span><b>OK ✓</b></div>
+      <div class="row"><span>Identificação</span><b>Legível ✓</b></div></div><p class="muted">Agora o visual: olhe as bobinas no chão.</p>`,'Conferir as bobinas');
+    await cartao(`<div class="tag">Pesagem na balança</div><h2>Antes de pesar, confira a etiqueta de calibração</h2>
+      <div class="doc pf"><div class="pfh"><b>Etiqueta de calibração</b><span>Balança</span></div>
+      <div class="row"><span>Código do instrumento</span><b>BAL-03</b></div><div class="row"><span>Calibrada em</span><b>10/2026</b></div><div class="row"><span>Válida até</span><b>10/2027 ✓</b></div></div>
+      <p class="muted">Todo instrumento de medição (balança, trena, paquímetro, dispositivo de controle) tem etiqueta com código e data da calibração. Calibração vencida: o instrumento não pode ser usado, e você avisa a qualidade.</p>`,'Calibração em dia, pesar');
+    LG.avaria=true;
+    await tocar('Uma bobina está com avaria. Toque nela.',[{x:44,y:70,w:12,h:14}]);
+    await cartao(`<div class="tag">Avaria encontrada</div><h2>Bobina amassada na borda</h2><p class="muted">Problema de qualidade no material quem trata é a qualidade. A logística não dá entrada como boa: <b>separa a bobina e aciona a qualidade</b>.</p>`,'Continuar');
+    await botoes(['Separar a bobina','Acionar a qualidade']);
+    INSP.show=true;INSP.x=INSP.tx=170;INSP.y=INSP.ty=90;await andar('insp',62,90);
+    await falar('A partir daqui a <b>qualidade assume</b>: o inspetor identifica a bobina como bloqueada, avalia e decide o destino dela, inclusive a tratativa com o fornecedor.');
+    await andar('insp',170,90);INSP.show=false;
+    LG.avaria=false;
+    await falar('A conferência confere a <b>nota fiscal</b> contra o material e acha <b>diferença de quantidade e avaria</b> na hora. Achou problema de qualidade? A logística separa e <b>aciona a qualidade</b>, que assume a situação.');
+  },
+  async()=>{ // FIFO
+    irEstoque();LG.loteA=4;LG.loteB=3;
+    await falar('No estoque temos dois lotes da mesma bobina. Em cima, o <b>lote A, de 05/10</b>. Embaixo, mais à mão, o <b>lote B, que chegou ontem</b>.');
+    await falar('Aqui vale o <b>FIFO</b>: primeiro que entra, primeiro que sai. Material esquecido no estoque envelhece, oxida e bagunça a rastreabilidade.');
+    await tocar('Toque no lote que deve sair primeiro.',[{x:7,y:36,w:50,h:13}]);
+    faiscas(30,42);
+    await falar('Isso: o lote mais antigo sai primeiro, mesmo estando mais difícil de pegar.');
+  },
+  async()=>{ // botão azul: conferência de saldo físico x sistêmico das embalagens de peças prontas
+    irEstoque();LG.botaoN=0;
+    await falar('Hora da <b>conferência de saldo</b> das embalagens de <b>peças prontas</b>: comparar o <b>saldo físico</b>, o que está no estoque, com o <b>saldo sistêmico</b>, o que o sistema diz que tem.');
+    let n=0;
+    await cartao(`<div class="tag">Conferência de saldo · peças prontas</div><div class="doc"><div class="row"><span>Reforço da coluna B · saldo no sistema</span><b>4 embalagens</b></div></div>
+      <h2>Conte as embalagens no estoque</h2><button class="btn ghost wide" id="cnt">Contei: 0</button>`,'Confirmar a contagem',(ok)=>{
+      $('#cnt').onclick=()=>{if(n<4){n++;$('#cnt').textContent='Contei: '+n;}if(n===4)ok();};});
+    await falar('Físico e sistema batendo: 4 e 4. Agora sinalize a conferência: cole o <b>botão azul</b>, o adesivo redondo, na etiqueta de cada embalagem conferida.');
+    await tocar('Toque na etiqueta de cada embalagem para colar o botão azul.',CXPA.map(([bx,by])=>({x:bx,y:by,w:10,h:8,cb:()=>{LG.botaoN++;faiscas(bx+7,by+3,5,['#2a5fbf','#9cc6ff']);}})));
+    let ass='';
+    await cartao(`<div class="tag">Botão azul</div><h2>Assine a conferência</h2><p class="muted">O botão azul com a sua assinatura na etiqueta da embalagem mostra que o saldo físico daquelas peças foi conferido com o saldo do sistema, e por quem.</p>
+      <label for="assin">Sua rubrica</label><input id="assin" maxlength="20" autocomplete="off">`,'Assinar',(ok)=>{$('#assin').oninput=()=>{ass=$('#assin').value.trim();if(ass.length>=2)ok();};});
+    await falar('Pronto: quem passar pelo estoque sabe que essas embalagens estão conferidas. Se o saldo não batesse, a diferença seria registrada e tratada na hora, e não no inventário de fim de mês.');
+  },
+  async()=>{ // levar a bobina à prensa e amarrar à OP
+    irEstoque();
+    await falar('A prensa pediu bobina para a OP que vai começar. Antes de mexer na carga: <b>peso, estabilidade e trajeto</b>.');
+    const itens=['Peso da bobina dentro da capacidade da empilhadeira','Bobina firme e centrada nos garfos','Corredor livre, sem gente nem material no caminho'];const m=new Set();
+    await cartao(`<div class="tag">Antes de movimentar a carga</div><div class="checks">${itens.map((t,i)=>`<button data-i="${i}">${t}</button>`).join('')}</div>`,'Tudo certo, pode ir',(ok)=>{
+      document.querySelectorAll('.checks button').forEach(b=>b.onclick=()=>{b.classList.add('on');m.add(b.dataset.i);if(m.size===itens.length)ok();});});
+    subir();await andar('emp',62,86);EMP.face=-1;LG.loteA--;EMP.carry='bobina';await esperar(300);
+    await andar('emp',96,86);EMP.carry=null;LG.bobPrensa=1;faiscas(108,50);await andar('emp',92,86);descer();
+    await falar('Bobina entregue. Agora o passo que muita gente esquece: <b>amarrar o saldo da bobina à OP</b>. Isso é feito no seu <b>coletor</b>, o aparelho que todo operador logístico carrega para registrar as movimentações e amarrações.');
+    await new Promise(r=>{escrever('<span class="hint">Pegue o coletor.</span>');const b=document.createElement('button');b.className='btn';b.textContent='Abrir o coletor';b.onclick=r;$('#acts').replaceChildren(b);});
+    let s=null;
+    await cartao(`<div class="coletor"><div class="cbar">COLETOR · Amarração à OP</div><div class="doc"><div class="row"><span>OP</span><b>4521 · Reforço da coluna B</b></div><div class="row"><span>Material</span><b>MORL1997 · LAC340Y410T GI 60/60U · 2,0 mm</b></div></div>
+      <h2>Qual bobina foi para a prensa?</h2><div class="checks" id="lts">${['Lote A · 05/10 · bobina 3','Lote B · 27/10 · bobina 1'].map(x=>`<button data-m="${x}">${x}</button>`).join('')}</div></div>`,'Amarrar à OP',(ok)=>{
+      document.querySelectorAll('#lts button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#lts button').forEach(x=>x.classList.toggle('on',x===b));s=b.dataset.m;ok();});});
+    await falar('Amarrado no coletor. Agora o estoque baixa certo, e se aparecer problema numa peça, dá para saber de qual bobina ela saiu.');
+  },
+  async()=>{ // bobina sem etiqueta
+    irEstoque();LG.semEtiqueta=true;
+    await falar('Opa... tem uma <b>bobina sem etiqueta</b> no chão do estoque. Parece igual às outras. Sem identificação, ninguém garante o que ela é.');
+    await botoes(['Não usar e separar a bobina','Acionar a qualidade']);
+    INSP.x=INSP.tx=170;INSP.y=INSP.ty=88;await andar('insp',84,88);LG.bloqueada=true;faiscas(92,64,8);
+    await falar('A qualidade assume: o inspetor <b>identifica a bobina como bloqueada</b> e vai descobrir o que ela é. Até lá, <b>material sem identificação não vai para a prensa</b>.');
+    await andar('insp',170,88);INSP.show=false;LG.semEtiqueta=false;LG.bloqueada=false;
+  },
+  async()=>{ // movimentação com equipamento adequado
+    irEstoque();LG.caixa=true;LG.paleteira='longe';
+    await falar('Uma caixa de <b>45 kg</b> de peças precisa ir até a prensa. A paleteira está em uso no outro corredor. Arrastar ou carregar no braço? Nada disso: <b>equipamento adequado e procedimento</b>.');
+    await botoes(['Buscar a paleteira','Colocar a caixa na paleteira','Levar até a prensa']).then(()=>{});
+    LG.paleteira='aqui';LG.caixa=false;LG.caixaNaPaleteira=true;await esperar(500);LG.paleteira='prensa';await esperar(700);
+    LG.caixaNaPaleteira=false;LG.paleteira='longe';faiscas(106,80);
+    await falar('Entregue sem esforço e sem risco para as costas nem para a peça.');
+  },
+  async()=>{ // gama de embalagem
+    irEstoque();
+    await falar('Antes de embalar o pedido para o cliente, quem diz <b>qual embalagem</b> usar e <b>quantas peças</b> vão em cada uma é a <b>gama de embalagem</b>. Ela vale para o operador e para o operador logístico.');
+    await cartao(`<div class="tag">Gama de embalagem</div><div class="doc pf">
+      <div class="pfh"><b>Gama de embalagem</b><span>Logística</span></div>
+      <div class="row"><span>Peça</span><b>Suporte (exemplo)</b></div>
+      <div class="row"><span>Embalagem</span><b>Caixa mobil</b></div>
+      <div class="row"><span>Quantidade por embalagem</span><b>3.840 peças</b></div>
+      <div class="row"><span>Peso total</span><b>até 330 kg</b></div>
+      <p><b>Nota:</b> a embalagem deve estar seca, isenta de sujidade e de contaminações físicas.</p>
+      <div class="carimbo">CÓPIA CONTROLADA</div></div>`,'Separar a embalagem');
+    let esc=null;
+    await cartao(`<div class="tag">Qual embalagem usar?</div><h2>Escolha conforme a gama</h2><div class="checks" id="embs">${['Caixa de papelão que sobrou do turno','Caixa mobil limpa e seca','Caixa mobil com água no fundo'].map(x=>`<button data-m="${x}">${x}</button>`).join('')}</div>`,'Usar esta embalagem',(ok)=>{
+      document.querySelectorAll('#embs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#embs button').forEach(x=>x.classList.toggle('on',x===b));esc=b.dataset.m;if(esc==='Caixa mobil limpa e seca')ok();else{$('#cok').disabled=true;b.classList.remove('on');b.textContent=b.dataset.m+' ✗ fora da gama';}});});
+    await falar('Isso: a embalagem da gama, <b>limpa e seca</b>, com a quantidade certa. Embalagem errada, suja ou com quantidade diferente vira reclamação na montadora, mesmo com a peça perfeita.');
+  },
+  async()=>{ // expedição
+    CENA='doca';PR.caminhao=0;Object.values(AT).forEach(a=>a.show=false);
+    await falar('Fim do turno: o pedido pronto vai para o cliente. Peça certa, quantidade certa e etiqueta do cliente em cada embalagem.');
+    await esperar(2200);
+    CENA='montadora';
+    await falar('E o material que você conferiu, guardou e abasteceu vira parte de um carro na montadora. Logística bem feita não aparece: só aparece quando falha.');
+  },
+  async()=>{ // avaliação
+    irEstoque();AT.op.show=false;AT.rita.x=AT.rita.tx=60;AT.rita.y=AT.rita.ty=86;
+    await falar('Turno encerrado! Agora a <b>avaliação</b>: 8 situações do dia a dia da logística. Pense no que é o certo, não no que é mais rápido.','Começar a avaliação');
+    let x=hash(ST.jog.matricula+'ordem2')||7;const ids=PERGUNTAS.map((_,i)=>i);
+    for(let i=ids.length-1;i>0;i--){x=Math.imul(x^(x>>>13),1274126177)>>>0;const j=x%(i+1);[ids[i],ids[j]]=[ids[j],ids[i]];}
+    for(let n=0;n<ids.length;n++)await perguntar(ids[n],n+1);
+  }
+];
+
+// ================== TELAS ==================
+function telaInicio(){
+  CENA='planta';
+  abrir(`<div class="tag">Semana da Qualidade · 9 a 13 de novembro</div><h2>Fase 2 · Operador logístico</h2>
+    <p class="muted">Um turno como operador logístico, com a Laryssa do RH. Leva uns 10 minutos. No fim do turno, uma avaliação com 8 situações do dia a dia.</p>
+    <label for="fnome">Nome completo</label><input id="fnome" autocomplete="name" maxlength="60">
+    <div class="grid2"><div><label for="fmat">Matrícula</label><input id="fmat" inputmode="numeric" maxlength="12"></div>
+    <div><label for="fset">Setor</label><select id="fset"><option value="">Escolha</option>${SETORES.map(s=>`<option>${s}</option>`).join('')}</select></div></div>
+    <p class="tiny">Seus dados são usados só para registrar as respostas da Semana da Qualidade e selecionar quem vai para o quiz de sexta.</p>
+    <button class="btn wide" id="ini">Começar</button>${/^https:\/\//.test(ENVIO_URL)?'':'<p class="tiny">Modo teste: as respostas ficam só neste aparelho.</p>'}`);
+  // quem já jogou a fase anterior não precisa digitar de novo
+  try{const f1=JSON.parse(localStorage.getItem('sq2026-fase1')||'null');if(f1&&f1.jog){$('#fnome').value=f1.jog.nome;$('#fmat').value=f1.jog.matricula;$('#fset').value=f1.jog.setor;}}catch(e){}
+  $('#ini').onclick=()=>{const nome=$('#fnome').value.trim(),mat=$('#fmat').value.trim(),set=$('#fset').value;
+    if(nome.length<3||!mat||!set){$('#ini').textContent='Preencha nome, matrícula e setor';return;}
+    ST={jog:{nome,matricula:mat,setor:set},resp:{},cap:0,ini:Date.now(),fim:0};salvar();fechar();iniciar();};
+}
+async function iniciar(){
+  montarElenco();atualizarProg();reenviarPendentes();
+  if(ST.cap>0){await falar(`Bem-vindo de volta, <b>{nome}</b>! Vamos continuar de onde você parou.`);}
+  for(let i=ST.cap;i<CAP.length;i++){await CAP[i]();ST.cap=i+1;salvar();}
+  if(!ST.fim){ST.fim=Date.now();salvar();enviar({tipo:'conclusao',tempo_s:Math.round((ST.fim-ST.ini)/1000)});}
+  telaFim();
+}
+function codigo(){return (hash(ST.jog.matricula+'|'+FASE+'|'+ST.fim).toString(36).toUpperCase()+'0000').slice(0,6);}
+function telaFim(){
+  CENA='montadora';
+  const min=Math.max(1,Math.round((ST.fim-ST.ini)/60000));
+  escrever('Fase 2 concluída! Obrigada pelo turno, {nome}. Amanhã às 18h tem a <b>Fase 3: Ferramenteiro</b>.'.replace('{nome}',primeiro()));
+  const b=document.createElement('button');b.className='btn';b.textContent='Ver resumo';b.onclick=()=>telaFim();$('#acts').replaceChildren(b);
+  abrir(`<div class="ok"><div class="chk">✓</div><div class="tag">Fase 2 · Operador logístico</div><h2>Fase concluída!</h2>
+    <p class="muted">Suas ${Object.keys(ST.resp).length} respostas foram registradas. O resultado sai na sexta de manhã, e as 5 pessoas com mais acertos vão para o quiz ao vivo na sexta.</p>
+    <p>Código de conclusão</p><div class="code">${codigo()}</div><p class="tiny">Tempo: cerca de ${min} min</p></div>
+    <button class="btn wide" id="okf">Fechar</button>
+    ${(/^https:\/\//.test(ENVIO_URL)&&!(STATUS&&STATUS.teste))?'':`<p class="tiny">Modo teste</p><div class="grid2"><button class="btn ghost" id="vreg">Ver registro</button><button class="btn ghost" id="zerar">Recomeçar teste</button></div>`}`);
+  $('#okf').onclick=fechar;
+  if($('#zerar')){$('#zerar').onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();};
+    $('#vreg').onclick=()=>{abrir(`<div class="tag">Registro (modo teste)</div><h2>${ST.jog.nome} · ${ST.jog.matricula} · ${ST.jog.setor}</h2>
+      <div class="doc">${PERGUNTAS.map((q,i)=>{const r=ST.resp[q.id];return `<div class="row"><span>${q.id}</span><b>${r?r.r.toUpperCase():'-'}</b></div>`;}).join('')}</div>
+      <p class="tiny">A letra é a da alternativa no documento de perguntas (a ordem na tela é embaralhada para cada pessoa).</p><button class="btn wide" id="vb">Voltar</button>`);$('#vb').onclick=telaFim;};}
+}
+requestAnimationFrame(t=>{ult=t;loop(t);});
+atualizarProg();
+// ---------- a planilha diz se a fase está aberta ----------
+let STATUS=null;
+async function consultarStatus(){
+  if(!/^https:\/\//.test(ENVIO_URL))return null;
+  try{const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),9000);
+    const r=await fetch(ENVIO_URL+'?acao=status',{signal:ctl.signal});clearTimeout(tm);
+    STATUS=await r.json();return (STATUS.fases||[]).find(f=>f.fase===FASE)||null;}catch(e){return null;}
+}
+const quando=iso=>new Date(iso).toLocaleString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Recife'});
+async function abrirJogo(){
+  if(/^https:\/\//.test(ENVIO_URL))abrir('<div class="ok"><h2>Carregando…</h2></div>');
+  const f=await consultarStatus();
+  if(ST.jog&&ST.fim){montarElenco();telaFim();return;}
+  if(f&&f.estado==='antes'){
+    abrir(`<div class="tag">Semana da Qualidade · 9 a 13 de novembro</div><h2>Fase ${FASE} · ${FASE_NOME}</h2><p class="muted">Esta fase ainda não começou. Ela abre <b>${quando(f.abre)}</b>.</p><button class="btn wide" id="tn">Tentar de novo</button>`);
+    $('#tn').onclick=()=>location.reload();return;}
+  if(f&&f.estado==='encerrada'){
+    abrir(`<div class="tag">Semana da Qualidade · 9 a 13 de novembro</div><h2>Fase ${FASE} · ${FASE_NOME}</h2><p class="muted">Esta fase foi encerrada ${quando(f.fecha)}. O resultado sai na sexta de manhã.</p>`);return;}
+  fechar();
+  if(!ST.jog)telaInicio();else iniciar();
+}
+abrirJogo();
+</script>
+
+</body></html>

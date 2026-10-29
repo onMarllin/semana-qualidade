@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Semana da Qualidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Silkscreen&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#14181d;--panel:#1d232a;--panel2:#262e37;--edge:#0a0d10;--line:#394451;--text:#e9edf0;--muted:#98a6b3;--yel:#f2c230;--green:#5cc26b;--red:#ec5a50}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Nunito',system-ui,sans-serif;font-size:17px;line-height:1.45}
+.app{max-width:560px;margin:0 auto;min-height:100dvh;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px}
+.brand{font-weight:800;text-transform:uppercase;font-size:12px;color:var(--yel);letter-spacing:.05em}
+h1{font-family:'Silkscreen',monospace;font-weight:400;font-size:26px;line-height:1.15;margin:2px 0 0;color:var(--text)}
+p{margin:0}.muted{color:var(--muted)}
+.fase{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--panel);border:3px solid var(--edge);box-shadow:inset 0 0 0 2px var(--line);padding:12px 14px;color:var(--text);text-decoration:none}
+.fase .n{font-family:'Silkscreen',monospace;font-size:24px;color:var(--yel);width:32px;text-align:center}
+.fase b{display:block;font-size:17px}.fase small{color:var(--muted);font-size:14px}
+.st{font-weight:800;font-size:12px;text-transform:uppercase;padding:3px 8px;border:2px solid var(--line);color:var(--muted);white-space:nowrap}
+.st.on{color:#0d1a10;background:var(--green);border-color:var(--green)}.st.off{color:var(--red);border-color:var(--red)}
+.fase.fechada{opacity:.6}
+.nota{font-size:14px;color:var(--muted);border-top:2px solid var(--line);padding-top:12px}
+</style></head><body>
+<div class="app">
+  <div><div class="brand">Itaesbra · 9 a 13 de novembro</div><h1>Semana da Qualidade</h1></div>
+  <p class="muted">Uma fase por dia, sempre às 18h. Viva um turno em cada função e responda 8 situações no fim. As 5 pessoas com mais acertos vão para o quiz ao vivo na sexta.</p>
+  <div id="lista"></div>
+  <p class="nota">Use o mesmo nome e a mesma matrícula em todas as fases. Todas ficam abertas até sexta, 13/11, às 7h.</p>
+</div>
+<script>
+// mesmo endereço do Apps Script usado nas fases
+const ENVIO_URL = 'https://script.google.com/macros/s/AKfycbwiLznOS_QZDKPjZ-mr9LW5UVFypfAKD5f2VO-ozjkEwBJveuFn2vLPmPus1Glu-nSS/exec';
+const FASES=[[1,'Operador de produção','segunda, 09/11, 18h'],[2,'Operador logístico','terça, 10/11, 18h'],[3,'Ferramenteiro','quarta, 11/11, 18h'],[4,'Inspetor de qualidade','quinta, 12/11, 18h']];
+function desenhar(est){
+  document.getElementById('lista').innerHTML=FASES.map(([n,nome,dia])=>{
+    const e=est&&est[n];const fim=(()=>{try{const s=JSON.parse(localStorage.getItem('sq2026-fase'+n)||'null');return s&&s.fim;}catch(x){return false;}})();
+    const tag=fim?'<span class="st on">Concluída</span>':e==='aberta'?'<span class="st on">Aberta</span>':e==='encerrada'?'<span class="st off">Encerrada</span>':e==='antes'?'<span class="st">Abre '+dia.split(',')[0]+'</span>':'';
+    return `<a class="fase${e==='antes'?' fechada':''}" href="fase${n}.html"><span class="n">${n}</span><span><b>${nome}</b><small>Abre ${dia}</small></span>${tag}</a>`;}).join('<div style="height:10px"></div>');
+}
+desenhar(null);
+if(/^https:\/\//.test(ENVIO_URL))fetch(ENVIO_URL+'?acao=status').then(r=>r.json()).then(j=>{const e={};(j.fases||[]).forEach(f=>e[f.fase]=f.estado);desenhar(e);}).catch(()=>{});
+</script>
+</body></html>
