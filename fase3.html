@@ -548,7 +548,7 @@ function telaInicio(){
     <label for="fnome">Nome completo</label><input id="fnome" autocomplete="name" maxlength="60">
     <div class="grid2"><div><label for="fmat">Matrícula</label><input id="fmat" inputmode="numeric" maxlength="12"></div>
     <div><label for="fset">Setor</label><select id="fset"><option value="">Escolha</option>${SETORES.map(s=>`<option>${s}</option>`).join('')}</select></div></div>
-    <p class="tiny">Seus dados são usados só para registrar as respostas da Semana da Qualidade e selecionar quem vai para o quiz de sexta.</p>
+    <p class="tiny">Seus dados são usados só para registrar as respostas da Semana da Qualidade e definir as 3 pessoas premiadas.</p>
     <button class="btn wide" id="ini">Começar</button>${/^https:\/\//.test(ENVIO_URL)?'':'<p class="tiny">Modo teste: as respostas ficam só neste aparelho.</p>'}`);
   // quem já jogou a fase anterior não precisa digitar de novo
   try{const f1=['sq2026-fase2','sq2026-fase1','sq2026-fase4'].map(k=>JSON.parse(localStorage.getItem(k)||'null')).find(x=>x&&x.jog);if(f1){$('#fnome').value=f1.jog.nome;$('#fmat').value=f1.jog.matricula;$('#fset').value=f1.jog.setor;}}catch(e){}
@@ -570,7 +570,7 @@ function telaFim(){
   escrever('Fase 3 concluída! Obrigada pelo turno, {nome}. Amanhã às 18h tem a <b>Fase 4: Inspetor de qualidade</b>.'.replace('{nome}',primeiro()));
   const b=document.createElement('button');b.className='btn';b.textContent='Ver resumo';b.onclick=()=>telaFim();$('#acts').replaceChildren(b);
   abrir(`<div class="ok"><div class="chk">✓</div><div class="tag">Fase 3 · Ferramenteiro</div><h2>Fase concluída!</h2>
-    <p class="muted">Suas ${Object.keys(ST.resp).length} respostas foram registradas. O resultado sai na sexta de manhã, e as 5 pessoas com mais acertos vão para o quiz ao vivo na sexta.</p>
+    <p class="muted">Suas ${Object.keys(ST.resp).length} respostas foram registradas. O resultado sai na sexta de manhã, e as 3 pessoas com mais acertos ganham um prêmio especial.</p>
     <p>Código de conclusão</p><div class="code">${codigo()}</div><p class="tiny">Tempo: cerca de ${min} min</p></div>
     <button class="btn wide" id="okf">Fechar</button>
     ${(/^https:\/\//.test(ENVIO_URL)&&!(STATUS&&STATUS.teste))?'':`<p class="tiny">Modo teste</p><div class="grid2"><button class="btn ghost" id="vreg">Ver registro</button><button class="btn ghost" id="zerar">Recomeçar teste</button></div>`}`);
