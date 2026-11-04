@@ -58,9 +58,11 @@ input,select{font:inherit;font-size:16px;color:var(--text);background:var(--pane
 .carimbo{margin:8px auto 0;width:fit-content;border:3px solid #c0392b;color:#c0392b;font-weight:800;padding:4px 10px;transform:rotate(-4deg)}
 .code{font-family:var(--display);font-size:20px;letter-spacing:.1em;background:var(--panel2);border:2px dashed var(--yel);padding:6px 12px}
 .golpe{font-size:22px;padding:14px}
+.top{position:relative;z-index:25}
+.sairb{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:2px solid var(--line);padding:3px 8px;cursor:pointer;margin-top:6px}
 </style>
 <div class="app">
-  <div class="top"><div><div class="brand">Semana da Qualidade</div><div class="fase" id="faseNome">Fase 4 · Qualidade</div></div><div class="prog" id="prog"></div></div>
+  <div class="top"><div><div class="brand">Semana da Qualidade</div><div class="fase" id="faseNome">Fase 4 · Qualidade</div></div><div style="display:flex;flex-direction:column;align-items:flex-end"><div class="prog" id="prog"></div><button class="sairb" id="sair" hidden>Trocar de pessoa</button></div></div>
   <div class="sc"><canvas id="cena" class="px" width="160" height="100" aria-label="Cena do jogo"></canvas><div class="labs" id="labs" aria-hidden="true"></div></div>
   <div class="dlg" id="dlg"><canvas id="ritaCv" class="px" width="12" height="19" aria-hidden="true"></canvas>
     <div><div class="nm" id="nm">Laryssa <span>RH</span></div><p id="txt" aria-live="polite"></p><div class="acts" id="acts"></div></div></div>
@@ -660,9 +662,9 @@ function telaFim(){
   abrir(`<div class="ok"><div class="chk">✓</div><div class="tag">Fase 4 · Inspetor de qualidade</div><h2>Fase concluída!</h2>
     <p class="muted">Suas ${Object.keys(ST.resp).length} respostas foram registradas. Esta era a última fase: todas ficam abertas até sexta às 7h. O resultado sai na sexta de manhã, e as 3 pessoas com mais acertos ganham um prêmio especial.</p>
     <p>Código de conclusão</p><div class="code">${codigo()}</div><p class="tiny">Tempo: cerca de ${min} min</p></div>
-    <button class="btn wide" id="okf">Fechar</button>
+    <button class="btn wide" id="okf">Fechar</button><button class="btn ghost wide" id="trfim">Trocar de pessoa</button>
     ${(/^https:\/\//.test(ENVIO_URL)&&!(STATUS&&STATUS.teste))?'':`<p class="tiny">Modo teste</p><div class="grid2"><button class="btn ghost" id="vreg">Ver registro</button><button class="btn ghost" id="zerar">Recomeçar teste</button></div>`}`);
-  $('#okf').onclick=fechar;
+  $('#okf').onclick=fechar;$('#trfim').onclick=trocarPessoa;
   if($('#zerar')){$('#zerar').onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();};
     $('#vreg').onclick=()=>{abrir(`<div class="tag">Registro (modo teste)</div><h2>${ST.jog.nome} · ${ST.jog.matricula} · ${ST.jog.setor}</h2>
       <div class="doc">${PERGUNTAS.map((q,i)=>{const r=ST.resp[q.id];return `<div class="row"><span>${q.id}</span><b>${r?r.r.toUpperCase():'-'}</b></div>`;}).join('')}</div>
@@ -670,6 +672,16 @@ function telaFim(){
 }
 requestAnimationFrame(t=>{ult=t;loop(t);});
 atualizarProg();
+// ---------- trocar de pessoa neste aparelho ----------
+function trocarPessoa(){
+  const nome=ST.jog?ST.jog.nome:'';const card=document.getElementById('card'),ov=document.getElementById('ov');
+  const antes=[...card.childNodes],estavaFechado=ov.hidden;
+  abrir(`<div class="tag">Trocar de pessoa</div><h2>Sair${nome?' de '+nome:''}?</h2>
+    <p class="muted">O progresso salvo neste aparelho, de todas as fases, será apagado e o jogo volta para a tela de entrada. As respostas que já foram enviadas continuam valendo na planilha.</p>
+    <button class="btn wide" id="trsim">Sim, trocar de pessoa</button><button class="btn ghost wide" id="trnao">Cancelar</button>`);
+  $('#trsim').onclick=()=>{for(const k of ['sq2026-fase1','sq2026-fase2','sq2026-fase3','sq2026-fase4'])try{localStorage.removeItem(k);}catch(e){}location.reload();};
+  $('#trnao').onclick=()=>{card.replaceChildren(...antes);ov.hidden=estavaFechado;};
+}
 // ---------- a planilha diz se a fase está aberta ----------
 let STATUS=null;
 function CXS_reset(){if(typeof CXS!=='undefined')CXS.length=0;}
@@ -696,12 +708,14 @@ async function abrirJogo(){
       <p class="muted">Você parou no meio do turno. Quer continuar de onde parou ou começar a fase do início?</p>
       ${feitas?`<p class="tiny">Você já confirmou ${feitas} resposta${feitas>1?'s':''} da avaliação. Elas continuam valendo e não mudam se você começar de novo.</p>`:''}
       <button class="btn wide" id="cont">Continuar de onde parei</button>
-      <button class="btn ghost wide" id="reini">Começar do início</button>`);
+      <button class="btn ghost wide" id="reini">Começar do início</button><button class="btn ghost wide" id="trocar">Não sou eu / trocar de pessoa</button>`);
+    $('#trocar').onclick=trocarPessoa;
     $('#cont').onclick=()=>{fechar();iniciar();};
     $('#reini').onclick=()=>{ST.cap=0;salvar();fechar();CXS_reset();Object.keys(AT).forEach(k=>delete AT[k]);iniciar(true);};
     return;}
   fechar();iniciar();
 }
+{const b=document.getElementById('sair');b.onclick=trocarPessoa;setInterval(()=>{b.hidden=!ST.jog;},500);}
 abrirJogo();
 </script>
 
