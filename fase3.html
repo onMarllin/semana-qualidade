@@ -193,9 +193,11 @@ const SETORES=['Produção','Logística','Manutenção','Ferramentaria','Qualida
 let ST={jog:null,resp:{},cap:0,ini:0,fim:0};
 try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)ST=r;}catch(e){}
 const salvar=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}};
+// código fixo deste aparelho (não é apagado ao trocar de pessoa)
+function aparelho(){let a='';try{a=localStorage.getItem('sq2026-aparelho')||'';if(!a){a=Math.random().toString(36).slice(2,8).toUpperCase()+Date.now().toString(36).slice(-4).toUpperCase();localStorage.setItem('sq2026-aparelho',a);}}catch(e){a='SEMLS';}return a;}
 function enviar(dados){
   if(!/^https:\/\//.test(ENVIO_URL))return;
-  const corpo=JSON.stringify({...dados,fase:FASE,matricula:ST.jog.matricula,nome:ST.jog.nome,setor:ST.jog.setor,ts:new Date().toISOString()});
+  const corpo=JSON.stringify({...dados,fase:FASE,matricula:ST.jog.matricula,nome:ST.jog.nome,setor:ST.jog.setor,dispositivo:aparelho(),ts:new Date().toISOString()});
   fetch(ENVIO_URL,{method:'POST',body:corpo}).catch(()=>{ST.pend=(ST.pend||[]).concat([corpo]);salvar();});
 }
 function reenviarPendentes(){if(!ST.pend||!ST.pend.length||!/^https:\/\//.test(ENVIO_URL))return;const p=ST.pend;ST.pend=[];salvar();p.forEach(c=>fetch(ENVIO_URL,{method:'POST',body:c}).catch(()=>{ST.pend.push(c);salvar();}));}
