@@ -196,7 +196,7 @@ function enviar(dados){
 function reenviarPendentes(){if(!ST.pend||!ST.pend.length||!/^https:\/\//.test(ENVIO_URL))return;const p=ST.pend;ST.pend=[];salvar();p.forEach(c=>fetch(ENVIO_URL,{method:'POST',body:c}).catch(()=>{ST.pend.push(c);salvar();}));}
 // embaralha as alternativas de forma fixa para cada pessoa (recarregar não muda a ordem)
 function hash(s){let h=2166136261;for(const ch of s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}return h;}
-function ordem(id){let x=hash((ST.jog?ST.jog.matricula:'')+id)||1;const k=['a','b','c','d'];for(let i=3;i>0;i--){x=Math.imul(x^(x>>>15),2246822507)>>>0;const j=x%(i+1);[k[i],k[j]]=[k[j],k[i]];}return k;}
+function ordem(id){let x=hash((ST.jog?(ST.jog.matricula||ST.jog.nome):'')+id)||1;const k=['a','b','c','d'];for(let i=3;i>0;i--){x=Math.imul(x^(x>>>15),2246822507)>>>0;const j=x%(i+1);[k[i],k[j]]=[k[j],k[i]];}return k;}
 
 
 // ================== CENA ==================
@@ -521,14 +521,65 @@ const CAP=[
   async()=>{ // avaliação do turno: as 8 perguntas no fim, em ordem embaralhada para cada pessoa
     CENA='posto';Object.values(AT).forEach(a=>a.show=false);AT.rita.show=true;AT.rita.x=AT.rita.tx=60;AT.rita.y=AT.rita.ty=84;
     await falar('Turno encerrado! Agora a <b>avaliação</b>: 8 situações do dia a dia. Pense no que é o certo, não no que é mais rápido.','Começar a avaliação');
-    let x=hash(ST.jog.matricula+'ordem')||7;const ids=PERGUNTAS.map((_,i)=>i);
+    let x=hash((ST.jog.matricula||ST.jog.nome)+'ordem')||7;const ids=PERGUNTAS.map((_,i)=>i);
     for(let i=ids.length-1;i>0;i--){x=Math.imul(x^(x>>>13),1274126177)>>>0;const j=x%(i+1);[ids[i],ids[j]]=[ids[j],ids[i]];}
     for(let n=0;n<ids.length;n++)await perguntar(ids[n],n+1);
   }
 ];
 
 // ================== TELAS ==================
+// ---------- entrada pela matrícula (cadastro na planilha) ----------
+function lembrarJog(){for(const k of ['sq2026-fase1','sq2026-fase2','sq2026-fase3','sq2026-fase4']){try{const s=JSON.parse(localStorage.getItem(k)||'null');if(s&&s.jog)return s.jog;}catch(e){}}return null;}
+function lembrarRE(){const j=lembrarJog();return j&&!j.manual?j.matricula:'';}
+function telaManual(intro,pre){
+  pre=pre||{};
+  abrir(`<div class="tag">Entrar sem a lista</div><h2>${intro.titulo}</h2>
+    <p class="muted">Não achou sua matrícula na lista? Entre com seu nome. Use sempre o mesmo nome e a mesma matrícula em todas as fases.</p>
+    <label for="mnome">Nome completo</label><input id="mnome" autocomplete="name" maxlength="60">
+    <div class="grid2"><div><label for="mmat">Matrícula (se tiver)</label><input id="mmat" inputmode="numeric" maxlength="12" autocomplete="off"></div>
+    <div><label for="mset">Setor</label><select id="mset"><option value="">Escolha</option>${SETORES.map(s=>`<option>${s}</option>`).join('')}</select></div></div>
+    <p class="tiny" id="manmsg">Gerentes e quem não tem matrícula podem deixar a matrícula em branco.</p>
+    <button class="btn wide" id="mok">Começar</button><button class="btn ghost wide" id="mvolta">Voltar e tentar pela matrícula</button>`);
+  if(pre.nome)$('#mnome').value=pre.nome;if(pre.matricula)$('#mmat').value=pre.matricula;if(pre.setor)$('#mset').value=pre.setor;
+  $('#mvolta').onclick=()=>telaCadastro(intro,true);
+  $('#mok').onclick=()=>{const nome=$('#mnome').value.trim().replace(/\s+/g,' '),mat=$('#mmat').value.replace(/\D/g,''),set=$('#mset').value;
+    if(nome.split(' ').length<2||nome.length<5){$('#manmsg').innerHTML='<span class="erro">Escreva seu nome completo (nome e sobrenome).</span>';return;}
+    if(!set){$('#manmsg').innerHTML='<span class="erro">Escolha o seu setor.</span>';return;}
+    ST={jog:{nome,matricula:mat,setor:set,manual:true},resp:{},cap:0,ini:Date.now(),fim:0};salvar();fechar();iniciar();};
+}
+
+function telaCadastro(intro,ignorarManual){
+  CENA='planta';
+  const ant=lembrarJog();if(ant&&ant.manual&&!ignorarManual)return telaManual(intro,ant);
+  abrir(`<div class="tag">Semana da Qualidade · 9 a 13 de novembro</div><h2>${intro.titulo}</h2>
+    <p class="muted">${intro.texto}</p>
+    <label for="fmat">Sua matrícula (RE)</label><input id="fmat" inputmode="numeric" maxlength="12" autocomplete="off">
+    <p class="tiny" id="cadmsg">Seu nome e setor vêm do cadastro da empresa. Use sempre a mesma matrícula.</p>
+    <button class="btn wide" id="busca">Continuar</button><button class="btn ghost wide" id="semlista">Não estou na lista / não tenho matrícula</button>
+    <p class="tiny">Seus dados são usados só para registrar as respostas da Semana da Qualidade e definir as 3 pessoas premiadas.</p>`);
+  $('#fmat').value=lembrarRE();
+  $('#semlista').onclick=()=>telaManual(intro,{matricula:$('#fmat').value.replace(/\D/g,'')});
+  $('#busca').onclick=async()=>{
+    const re=$('#fmat').value.replace(/\D/g,'');
+    if(!re){$('#cadmsg').innerHTML='<span class="erro">Digite a sua matrícula.</span>';return;}
+    $('#busca').disabled=true;$('#busca').textContent='Procurando…';
+    let r=null;try{const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),12000);r=await (await fetch(ENVIO_URL+'?acao=quem&re='+encodeURIComponent(re),{signal:ctl.signal})).json();clearTimeout(tm);}catch(e){r=null;}
+    $('#busca').disabled=false;$('#busca').textContent='Continuar';
+    if(!r){$('#cadmsg').innerHTML='<span class="erro">Sem conexão com a planilha. Confira a internet e tente de novo.</span>';return;}
+    if(r.ativo===false){telaInicioLivre();return;}
+    if(!r.achou){$('#cadmsg').innerHTML='<span class="erro">Matrícula não encontrada na lista. Confira o número. Se estiver certo, toque em <b>Não estou na lista</b> logo abaixo.</span>';return;}
+    abrir(`<div class="tag">Confirme seus dados</div><h2>Você é ${r.nome}?</h2>
+      <div class="doc"><div class="row"><span>Matrícula</span><b>${re}</b></div><div class="row"><span>Setor</span><b>${r.setor}</b></div></div>
+      <button class="btn wide" id="sim">Sou eu, começar</button><button class="btn ghost wide" id="nao">Não sou eu</button>`);
+    $('#sim').onclick=()=>{ST={jog:{nome:r.nome,matricula:re,setor:r.setor},resp:{},cap:0,ini:Date.now(),fim:0};salvar();fechar();iniciar();};
+    $('#nao').onclick=()=>telaInicio();
+  };
+}
 function telaInicio(){
+  if(/^https:\/\//.test(ENVIO_URL))return telaCadastro({titulo:'Fase 1 · Produção',texto:'Um turno como operador, com a Laryssa do RH. Leva uns 10 minutos. No fim do turno, uma avaliação com 8 situações do dia a dia.'});
+  telaInicioLivre();
+}
+function telaInicioLivre(){
   CENA='planta';
   abrir(`<div class="tag">Semana da Qualidade · 9 a 13 de novembro</div><h2>Fase 1 · Produção</h2>
     <p class="muted">Um turno como operador, com a Laryssa do RH. Leva uns 10 minutos. No fim do turno, uma avaliação com 8 situações do dia a dia.</p>
@@ -541,9 +592,8 @@ function telaInicio(){
     if(nome.length<3||!mat||!set){$('#ini').textContent='Preencha nome, matrícula e setor';return;}
     ST={jog:{nome,matricula:mat,setor:set},resp:{},cap:0,ini:Date.now(),fim:0};salvar();fechar();iniciar();};
 }
-async function iniciar(){
+async function iniciar(doInicio){
   montarElenco();atualizarProg();reenviarPendentes();
-  if(ST.cap>0){await falar(`Bem-vindo de volta, <b>{nome}</b>! Vamos continuar de onde você parou.`);}
   for(let i=ST.cap;i<CAP.length;i++){await CAP[i]();ST.cap=i+1;salvar();}
   if(!ST.fim){ST.fim=Date.now();salvar();enviar({tipo:'conclusao',tempo_s:Math.round((ST.fim-ST.ini)/1000)});}
   telaFim();
@@ -569,6 +619,7 @@ requestAnimationFrame(t=>{ult=t;loop(t);});
 atualizarProg();
 // ---------- a planilha diz se a fase está aberta ----------
 let STATUS=null;
+function CXS_reset(){if(typeof CXS!=='undefined')CXS.length=0;}
 async function consultarStatus(){
   if(!/^https:\/\//.test(ENVIO_URL))return null;
   try{const ctl=new AbortController();const tm=setTimeout(()=>ctl.abort(),9000);
@@ -585,8 +636,18 @@ async function abrirJogo(){
     $('#tn').onclick=()=>location.reload();return;}
   if(f&&f.estado==='encerrada'){
     abrir(`<div class="tag">Semana da Qualidade · 9 a 13 de novembro</div><h2>Fase ${FASE} · ${FASE_NOME}</h2><p class="muted">Esta fase foi encerrada ${quando(f.fecha)}. O resultado sai na sexta de manhã.</p>`);return;}
-  fechar();
-  if(!ST.jog)telaInicio();else iniciar();
+  if(!ST.jog){telaInicio();return;}
+  if(ST.cap>0){
+    const feitas=Object.keys(ST.resp).length;
+    abrir(`<div class="tag">Semana da Qualidade · Fase ${FASE}</div><h2>Bem-vindo de volta, ${primeiro()}!</h2>
+      <p class="muted">Você parou no meio do turno. Quer continuar de onde parou ou começar a fase do início?</p>
+      ${feitas?`<p class="tiny">Você já confirmou ${feitas} resposta${feitas>1?'s':''} da avaliação. Elas continuam valendo e não mudam se você começar de novo.</p>`:''}
+      <button class="btn wide" id="cont">Continuar de onde parei</button>
+      <button class="btn ghost wide" id="reini">Começar do início</button>`);
+    $('#cont').onclick=()=>{fechar();iniciar();};
+    $('#reini').onclick=()=>{ST.cap=0;salvar();fechar();CXS_reset();Object.keys(AT).forEach(k=>delete AT[k]);iniciar(true);};
+    return;}
+  fechar();iniciar();
 }
 abrirJogo();
 </script>
