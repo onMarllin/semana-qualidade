@@ -21,14 +21,14 @@ p{margin:0}.muted{color:var(--muted)}
 </style></head><body>
 <div class="app">
   <div><div class="brand">Itaesbra · 9 a 13 de novembro</div><h1>Semana da Qualidade</h1></div>
-  <p class="muted">Uma fase por dia, sempre às 18h. Viva um turno em cada função e responda 8 situações no fim. As 3 pessoas com mais acertos ganham um prêmio especial.</p>
+  <p class="muted">Uma fase por dia, sempre às 19h. Viva um turno em cada função e responda 8 situações no fim. As 3 pessoas com mais acertos ganham um prêmio especial.</p>
   <div id="lista"></div>
-  <p class="nota">Use o mesmo nome e a mesma matrícula em todas as fases. Todas ficam abertas até sexta, 13/11, às 7h.</p>
+  <p class="nota">Use o mesmo nome e a mesma matrícula em todas as fases. Todas ficam abertas até sexta, 13/11, ao meio-dia.</p>
 </div>
 <script>
 // mesmo endereço do Apps Script usado nas fases
 const ENVIO_URL = 'https://script.google.com/macros/s/AKfycbwiLznOS_QZDKPjZ-mr9LW5UVFypfAKD5f2VO-ozjkEwBJveuFn2vLPmPus1Glu-nSS/exec';
-const FASES=[[1,'Operador de produção','segunda, 09/11, 18h'],[2,'Operador logístico','terça, 10/11, 18h'],[3,'Ferramenteiro','quarta, 11/11, 18h'],[4,'Inspetor de qualidade','quinta, 12/11, 18h']];
+const FASES=[[1,'Operador de produção','segunda, 09/11, 19h'],[2,'Operador logístico','terça, 10/11, 19h'],[3,'Ferramenteiro','quarta, 11/11, 19h'],[4,'Inspetor de qualidade','quinta, 12/11, 19h']];
 function desenhar(est){
   document.getElementById('lista').innerHTML=FASES.map(([n,nome,dia])=>{
     const e=est&&est[n];const fim=(()=>{try{const s=JSON.parse(localStorage.getItem('sq2026-fase'+n)||'null');return s&&s.fim;}catch(x){return false;}})();

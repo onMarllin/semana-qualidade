@@ -606,7 +606,7 @@ function codigo(){return (hash(ST.jog.matricula+'|'+FASE+'|'+ST.fim).toString(36
 function telaFim(){
   CENA='montadora';
   const min=Math.max(1,Math.round((ST.fim-ST.ini)/60000));
-  escrever('Fase 1 concluída! Obrigada pelo turno, {nome}. Amanhã às 18h tem a <b>Fase 2: Operador logístico</b>.'.replace('{nome}',primeiro()));
+  escrever('Fase 1 concluída! Obrigada pelo turno, {nome}. Amanhã às 19h tem a <b>Fase 2: Operador logístico</b>.'.replace('{nome}',primeiro()));
   const b=document.createElement('button');b.className='btn';b.textContent='Ver resumo';b.onclick=()=>telaFim();$('#acts').replaceChildren(b);
   abrir(`<div class="ok"><div class="chk">✓</div><div class="tag">Fase 1 · Produção</div><h2>Fase concluída!</h2>
     <p class="muted">Suas ${Object.keys(ST.resp).length} respostas foram registradas. O resultado sai na sexta de manhã, e as 3 pessoas com mais acertos ganham um prêmio especial.</p>

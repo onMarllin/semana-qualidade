@@ -662,7 +662,7 @@ function telaFim(){
   escrever('Fase 4 concluída! Obrigada pela semana, {nome}. O resultado sai na <b>sexta de manhã</b>.'.replace('{nome}',primeiro()));
   const b=document.createElement('button');b.className='btn';b.textContent='Ver resumo';b.onclick=()=>telaFim();$('#acts').replaceChildren(b);
   abrir(`<div class="ok"><div class="chk">✓</div><div class="tag">Fase 4 · Inspetor de qualidade</div><h2>Fase concluída!</h2>
-    <p class="muted">Suas ${Object.keys(ST.resp).length} respostas foram registradas. Esta era a última fase: todas ficam abertas até sexta às 7h. O resultado sai na sexta de manhã, e as 3 pessoas com mais acertos ganham um prêmio especial.</p>
+    <p class="muted">Suas ${Object.keys(ST.resp).length} respostas foram registradas. Esta era a última fase: todas ficam abertas até sexta ao meio-dia. O resultado sai na sexta de manhã, e as 3 pessoas com mais acertos ganham um prêmio especial.</p>
     <p>Código de conclusão</p><div class="code">${codigo()}</div><p class="tiny">Tempo: cerca de ${min} min</p></div>
     <button class="btn wide" id="okf">Fechar</button><button class="btn ghost wide" id="trfim">Trocar de pessoa</button>
     ${(/^https:\/\//.test(ENVIO_URL)&&!(STATUS&&STATUS.teste))?'':`<p class="tiny">Modo teste</p><div class="grid2"><button class="btn ghost" id="vreg">Ver registro</button><button class="btn ghost" id="zerar">Recomeçar teste</button></div>`}`);
